@@ -1,0 +1,58 @@
+server:
+  port: 8080
+spring:
+  cloud:
+    function:
+      #definition: supplier;consumer
+      definition: ordersupplier;orderconsumer
+    stream:
+      #function:
+        #definition: supplier;consumer
+        #definition: ordersupplier;orderconsumer
+        #definition: sink;flux
+      bindings:
+        ordersupplier-out-0:
+          destination: order-created
+        orderconsumer-in-0:
+          destination: order-updated
+      kafka:
+        binder:
+          brokers: localhost:9092
+          auto-create-topics: true
+---
+spring:
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      data-locations: classpath:schema.sql
+
+  r2dbc:
+    url: r2dbc:postgresql://localhost:3432/re2dbc_db
+    #url: r2dbc:h2:mem:///fluxr2dbc
+    username: postgres
+    password: postgrespw
+    
+  jpa:
+   defer-datasource-initialization: true
+  #  show-sql: true
+   # hibernate:
+   #   ddl-auto: update
+   # database-platform: org.hibernate.dialect.H2Dialect
+  #datasource:
+   #     url: r2dbc:h2:mem:fluxr2dbc
+   #     username: admin
+   #     password: adminpw
+   #     driver-class-name: org.h2.Driver
+  h2:
+   console:
+     enabled: true
+     #path: /h2-console
+     #port: 8089
+springdoc:
+  swagger-ui:
+    path: /swagger-ui # swagger custom path
+    enabled: true  # Disabling the swagger-ui production enviroments always false
+  api-docs:
+    groups:
+      enabled: true
