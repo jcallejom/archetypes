@@ -1,7 +1,9 @@
 server:
   port: 8083
----
+###
 spring:
+  application:
+    name: prototype-orchestrator 
   cloud:
     function:
       #definition: supplier;consumer
@@ -17,9 +19,31 @@ spring:
       kafka:
         binder:
           replication-factor: 1
-          brokers: localhost:9092
----
+          brokers: ${KAFKA_HOST:localhost}:9092
+######
 service:
   endpoints:
     inventory: http://localhost:8081
     payment: http://localhost:8082
+
+tracing:
+  url: http://localhost:4318/v1/traces
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://localhost:4318/v1/traces
+logging:
+    pattern:
+      level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'      
+    ######old jaeger######
+    #opentracing:
+      #jaeger:
+        #http-sender:
+          #url: http://localhost:14268/api/traces
+          #url: http://${JAEGER_HOST:localhost}:14268/api/traces
+        #enable-b3-propagation: true
+    ######old jaeger######   

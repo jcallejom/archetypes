@@ -49,7 +49,6 @@
         <dependency>
 			<groupId>com.archetype.architectural</groupId>
             <artifactId>common-vo</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <!-- dependencia boot 2.7.x
             <dependency>
@@ -63,7 +62,12 @@
                 <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
                 <version>2.6.0</version>
             </dependency>
-          
+    <!-- Dependencia de jaeger cloud spring 2.7.x     
+         <dependency>
+             <groupId>io.opentracing.contrib</groupId>
+             <artifactId>opentracing-spring-jaeger-cloud-starter</artifactId>
+         </dependency>          
+         --> 
     </dependencies>
 
 </project>

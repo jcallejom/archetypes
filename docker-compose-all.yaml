@@ -83,8 +83,64 @@ services:
         - "14268:14268"
         - "9411:9411"
     environment:
-        - COLLECTOR_OTLP_ENABLED=true
-         
+      - COLLECTOR_OTLP_ENABLED=true
+###
+  prototypebff-service:
+      container_name: prototypebff-service
+      image: prototypebff-service:0.0.1-SNAPSHOT
+      environment:
+        DB_HOST: postgres_db:5432
+        KAFKA_HOST: kafka
+        JAEGER_HOST: jaeger 
+        JAVA_OPTS:
+          -Xms256M 
+          -Xmx256M
+      ports:
+        - "8080:8080"
+      depends_on:
+        - jaeger
+        - kafka
+##
+  prototype-orchestrator:
+    container_name: prototype-orchestrator
+    image: prototype-orchestrator:0.0.1-SNAPSHOT
+    environment:
+       KAFKA_HOST: kafka 
+       JAEGER_HOST: jaeger 
+       JAVA_OPTS:
+         -Xms256M 
+         -Xmx256M        
+    ports:
+       - "8083:8083"
+    depends_on:
+      - jaeger
+      - kafka
+###
+  command-inventory-service:
+    container_name: command-inventory-service
+    image: command-inventory-service:0.0.1-SNAPSHOT
+    environment:
+       JAEGER_HOST: jaeger 
+       JAVA_OPTS:
+         -Xms256M 
+         -Xmx256M             
+    ports:
+      - "8081:8081"
+    depends_on:
+      - jaeger
+###
+  command-payment-service:
+    container_name: command-payment-service
+    image: command-payment-service:0.0.1-SNAPSHOT
+    environment:
+       JAEGER_HOST: jaeger 
+       JAVA_OPTS:
+         -Xms256M 
+         -Xmx256M             
+    ports:
+        - "8082:8082"
+    depends_on:
+      - jaeger                               
 volumes:
   postgres_data:
      driver: local

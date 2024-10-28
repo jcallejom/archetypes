@@ -1,6 +1,8 @@
 server:
   port: 8080
 spring:
+  application:
+    name: prototypebff-service
   cloud:
     function:
       #definition: supplier;consumer
@@ -17,10 +19,8 @@ spring:
           destination: order-updated
       kafka:
         binder:
-          brokers: localhost:9092
+          brokers: ${KAFKA_HOST:localhost}:9092
           auto-create-topics: true
----
-spring:
   sql:
     init:
       mode: always
@@ -28,7 +28,8 @@ spring:
       data-locations: classpath:schema.sql
 
   r2dbc:
-    url: r2dbc:postgresql://localhost:3432/re2dbc_db
+    #url: r2dbc:postgresql://localhost:3432/re2dbc_db
+    url: r2dbc:postgresql://${DB_HOST:localhost:3432}/re2dbc_db
     #url: r2dbc:h2:mem:///fluxr2dbc
     username: postgres
     password: postgrespw
@@ -53,6 +54,29 @@ springdoc:
   swagger-ui:
     path: /swagger-ui # swagger custom path
     enabled: true  # Disabling the swagger-ui production enviroments always false
+    use-root-path: true
   api-docs:
     groups:
       enabled: true
+
+tracing:
+  url: http://localhost:4318/v1/traces
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://localhost:4318/v1/traces
+logging:
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'      
+######old jaeger######
+#opentracing:
+  #jaeger:
+    #http-sender:
+      #url: http://localhost:14268/api/traces
+      #url: http://${JAEGER_HOST:localhost}:14268/api/traces
+    #enable-b3-propagation: true
+######old jaeger######    
