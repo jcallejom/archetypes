@@ -72,6 +72,7 @@ services:
 #jaeger service
 ##########################################################################
   jaeger:
+    container_name: jaeger-service
     image: "jaegertracing/all-in-one:latest" ##1.125
     ports:
         - "5775:5775/udp"

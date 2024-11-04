@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: prototypebff-service
+  #kafka:
+    #template:
+      #observation-enabled: true
   cloud:
     function:
       #definition: supplier;consumer
@@ -21,6 +24,7 @@ spring:
         binder:
           brokers: ${KAFKA_HOST:localhost}:9092
           auto-create-topics: true
+          enable-observation: true
   sql:
     init:
       mode: always
@@ -59,16 +63,23 @@ springdoc:
     groups:
       enabled: true
 
-tracing:
-  url: http://localhost:4318/v1/traces
+#tracing:
+  #url: http://localhost:4318/v1/traces
 
 management:
   tracing:
     sampling:
       probability: 1.0
+  #zipkin:
+    #tracing:
+      #endpoint: http://localhost:4317    
   otlp:
     tracing:
+      #endpoint: http://localhost:4317
       endpoint: http://localhost:4318/v1/traces
+    #metrics:
+      #export:
+        #url: http://localhost:4317 
 logging:
   pattern:
     level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'      
