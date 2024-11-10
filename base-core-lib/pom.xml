@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+	  <groupId>com.archetype</groupId>
+	  <artifactId>parent-lib</artifactId>
+	  <version>1.0.0-SNAPSHOT</version>
+    </parent>
+	
+   <groupId>com.archetype.base.core</groupId>
+   <artifactId>base-core-lib</artifactId>
+   <version>1.0.0-SNAPSHOT</version>
+   <name>${project.groupId}:${project.artifactId}</name>
+   <properties>
+		<spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+		<!-- <hibernate.version>5.6.15.Final</hibernate.version> -->
+		<hibernate.version>6.2.6.Final</hibernate.version>
+   </properties>
+    <dependencies>
+	 <!--	<dependency>
+		 	<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+   <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+      <version>5.7.7</version>
+      <scope>compile</scope>
+    </dependency>-->
+    
+      <!-- Token de seguridad , only tokenProvider affect-->
+	<!-- 		<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-jwt</artifactId>
+				<version>1.0.7.RELEASE</version>
+				<scope>provided</scope>
+				</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-api</artifactId>
+				<version>0.10.7</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-impl</artifactId>
+				<version>0.10.7</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-jackson</artifactId>
+				<version>0.10.7</version>
+				<scope>provided</scope>
+			</dependency>
+			-->
+			<!-- Token de seguridad , only tokenProvider affect-->
+			
+		<!-- only audited orm affect-->	
+			   	<dependency>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-jpamodelgen</artifactId>
+					<version>${hibernate.version}</version>
+				</dependency>   
+				<dependency>
+					<!-- <groupId>org.hibernate.orm</groupId>  solo jakarta-->
+				    <groupId>org.hibernate</groupId>
+				    <artifactId>hibernate-envers</artifactId>
+				    <version>${hibernate.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-web</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-data-jpa</artifactId>
+				</dependency>
+				
+				<dependency>
+				    <groupId>org.springdoc</groupId>
+				    <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+				</dependency>
+
+    </dependencies>
+  <distributionManagement>
+        <repository>
+            <id>commons-librarys-repository</id>
+            <name>/commons-librarys-repository</name>
+            <url>https://jfrog-io.infra.ocp.once.org/artifactory/commons-librarys-mvn-release-virtual/</url>
+        </repository>
+  
+  	   	<snapshotRepository>
+            <id>commons-librarys-repository-snapshot</id>
+            <name>/commons-librarys-repository-snapshot</name>
+            <url>https://jfrog-io.infra.ocp.once.org/artifactory/commons-librarys-mvn-snapshot-virtual/</url>        
+	   	</snapshotRepository>
+	</distributionManagement>
+  
+ </project>
+ 

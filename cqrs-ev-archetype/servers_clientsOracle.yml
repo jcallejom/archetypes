@@ -1,0 +1,127 @@
+version: "3.8"
+
+services:
+  zookeeper:
+    image: bitnami/zookeeper
+    container_name: zookeeper
+    restart: always
+    ports:
+      - 2181:2181
+    volumes:
+      - zookeeper_data:/bitnami
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - cqrs-net
+  kafka:
+    image: bitnami/kafka
+    container_name: kafka
+    ports:
+      - 9092:9092
+    restart: always
+    volumes:
+      - kafka_data:/bitnami
+    environment:
+        - KAFKA_ENABLE_KRAFT=no
+        - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+        - ALLOW_PLAINTEXT_LISTENER=yes
+        - KAFKA_LISTENERS=LISTENER_SEVICE://:9092,LISTENER_KAFDROP://kafka:29092
+        - KAFKA_ADVERTISED_LISTENERS=LISTENER_SEVICE://localhost:9092,LISTENER_KAFDROP://kafka:29092
+        - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP= LISTENER_SEVICE:PLAINTEXT, LISTENER_KAFDROP:PLAINTEXT
+        - KAFKA_INTER_BROKER_LISTENER_NAME= LISTENER_SEVICE
+      #- KAFKA_ADVERTISED_HOST_NAME=kafka
+    depends_on:
+      - zookeeper
+    networks:
+      - cqrs-net
+##########################################################################     
+#database service
+##########################################################################       
+  oracle21xe_db:
+    #image: container-registry.oracle.com/database/express:latest
+    image: container-registry.oracle.com/database/express:latest
+    container_name: oracle21cxe
+    restart: always
+    ports:
+      - 1521:1521
+      - 5500:5500
+    environment:
+    #Sid database
+    #- ORACLE_SID=sorteo
+    #optional this is default user 
+    - ORACLE_PDB=oracleuser
+    # optional change user SYSTEM password 
+    - ORACLE_PWD=oraclepw
+    volumes:
+        #allow *.sql, *.sql.gz, or *.sh and is execute only if data directory is empty
+        - ./dbfiles:/docker-entrypoint-initdb.d
+        - ./../oracle_data:/opt/oracle/oradata
+        #- ./../oracle_data:/u01/app/oracle/oradata
+    networks:
+      - cqrs-net
+  mongodb:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: adminpw
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - cqrs-net    
+#database admin service
+  adminer:
+    #container_name: adminer
+    image: adminer
+    restart: always
+    depends_on: 
+      - mongodb
+    ports:
+       - 9090:8080
+    networks:
+      - cqrs-net
+ ##########################################################################     
+ #dbeaver service
+ ##########################################################################       
+  dbeaver:
+    image: dbeaver/cloudbeaver
+    restart: always
+    ports:
+      - 8978:8978
+    volumes: 
+       - ./../cloudbeaver_data:/opt/cloudbeaver/workspace      
+    depends_on:
+      - oracle21xe_db
+    networks:
+      - cqrs-net
+##########################################################################     
+#kafdrop service
+##########################################################################           
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:29092"
+    depends_on:
+      - kafka
+      - zookeeper      
+    networks:
+      - cqrs-net
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
+  oracle_data:
+    driver: local
+  mongodb_data:
+    driver: local
+  cloudbeaver_data:
+    driver: local    
+networks:
+  cqrs-net:
+    name: cqrs-net
+    driver: bridge

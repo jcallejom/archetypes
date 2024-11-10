@@ -1,0 +1,57 @@
+#log properties
+logging:
+  level:
+    org:
+      springframework: ${LOG:DEBUG}
+      #security: ${SEC_LOG:INFO}
+    es:
+      once:
+        newsop: ${ASP_LOG:DEBUG}
+logging.level.org.springframework.security: ${SEC_LOG:DEBUG}
+logger:
+   org.hibernate.SQL: ${HIB_LOG:INFO}
+#Apic doc properties
+springdoc:
+  show-actuator: true
+  swagger-ui:
+    path: /swagger-ui # swagger custom path
+    enabled: true  # Disabling the swagger-ui production enviroments always false
+    use-root-path: true
+    groups-order: DESC
+    disable-swagger-default-url: true
+  #packagesToScan: com.archetype.app.infrastructure.in.rest, com.archetype.app.domain
+  #pathsToMatch: /v1/prototype/** , /actuator/** #creates groups before
+#Database properties
+spring:
+   jpa:
+     defer-datasource-initialization: true
+     show-sql: true
+     hibernate:
+        ddl-auto: ${DATASOURCE_DDL_AUTO:none}
+     properties:
+        hibernate:
+           dialect: ${DATASOURCE_DIALECT:org.hibernate.dialect.H2Dialect}
+   datasource:
+    driverClassName: ${DATASOURCE_DRIVER:org.h2.Driver}
+    url: ${DATASOURCE_URL:jdbc:h2:mem:test_db;MODE=ORACLE;DB_CLOSE_DELAY=-1}
+    username: ${DATASOURCE_USERNAME:sa}
+    password: ${DATASOURCE_PASSWORD:password}
+   
+   kafka:
+    listener:
+      ack-mode: MANUAL_IMMEDIATE
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: prototypeConsumer
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
+    template:
+      default-topic: "prototype_availability" 
+  
+   
