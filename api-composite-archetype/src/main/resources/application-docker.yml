@@ -1,0 +1,32 @@
+spring:
+  jpa:
+     defer-datasource-initialization: true  
+     show-sql: true  
+     hibernate:
+        ddl-auto: update
+        format_sql: true
+     properties:
+        hibernate:
+           dialect: org.hibernate.dialect.OracleDialect
+           #Spring Boot 3.1 upgrades to Hibernate 6.2, so upgrading SB to 3.1.x fixes strategy = GenerationType.AUTO
+           hql.bulk_id_strategy.global_temporary.create_tables: false
+           hql.bulk_id_strategy.global_temporary.drop_tables: false
+  datasource:
+    driverClassName: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521:XE
+    username: ORACLEUSER
+    password: oraclepw
+    entity-package: com.archetype.app.infrastructure.out.db.jpa.entity
+    repository-package: com.archetype.app.infrastructure.out.db.jpa.repository
+  #datasource-secondary:
+    #driverClassName: oracle.jdbc.OracleDriver
+    #url: jdbc:oracle:thin:@localhost:1521:XE
+    #username: PRODUC_D
+    #password: oraclepw
+    #dialect: org.hibernate.dialect.OracleDialect
+    #ddl-auto: update
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      #data-locations: classpath:db/dataoracle.sql

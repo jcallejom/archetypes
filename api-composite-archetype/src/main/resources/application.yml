@@ -1,0 +1,44 @@
+server:
+  port: 8080
+  #use-forward-headers: true
+  forward-headers-strategy: framework
+  servlet:
+    context-path: /${spring.application.name}
+spring:
+   application:
+    name: nsp-archetype-rest-jpa
+   profiles:
+     active: dev
+   config:
+     import: "classpath:/application-dev.yml"
+
+management:
+  endpoints:
+    web:
+      #base-path: /ocp-nsp-sorteo
+      exposure:
+        #include: '*'
+        include: health, metrics, prometheus
+  endpoint:
+    health:
+      show-details: ALWAYS
+  metrics:
+   tags:
+    application: ${spring.application.name}
+#  jpa:
+#     show-sql: true
+#     hibernate:
+#        ddl-auto: ${DATASOURCE_DDL_AUTO:none}
+#     properties:
+#        hibernate:
+#           dialect: org.hibernate.dialect.PostgreSQLDialect
+#  datasource:
+#    driverClassName: ${DATASOURCE_DRIVER:org.postgresql.Driver}
+#    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:3432/databasename}
+#    username: ${DATASOURCE_USERNAME:postgresuser}
+#    password: ${DATASOURCE_PASSWORD:postgrespw}
+#  sql:
+#    init:
+#      mode: always
+#      continue-on-error: true
+#    

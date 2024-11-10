@@ -361,8 +361,7 @@
     </build>
     <modules>
 	<!-- -->	
-		<module>api-compossite-parent</module>
-	
+		<module>api-composite-parent</module>
 		<module>cqrs-ev-parent</module>
     </modules>
 

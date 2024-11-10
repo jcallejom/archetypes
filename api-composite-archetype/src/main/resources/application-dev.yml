@@ -1,0 +1,59 @@
+#log properties
+logging:
+  level:
+    org:
+      springframework: ${LOG:DEBUG}
+      #security: ${SEC_LOG:INFO}
+    es:
+      once:
+        newsop: ${ASP_LOG:DEBUG}
+logging.level.org.springframework.security: ${SEC_LOG:DEBUG}
+logger:
+   org.hibernate.SQL: ${HIB_LOG:INFO}
+#Apic doc properties
+springdoc:
+  show-actuator: true
+  swagger-ui:
+    path: /swagger-ui # swagger custom path
+    enabled: true  # Disabling the swagger-ui production enviroments always false
+    use-root-path: true
+    groups-order: DESC
+    disable-swagger-default-url: true
+  #packagesToScan: com.archetype.app.infrastructure.in.rest, com.archetype.app.domain
+  #pathsToMatch: /v1/prototype/** , /actuator/** #creates groups before
+#Database properties
+spring:
+   jpa:
+     defer-datasource-initialization: true
+     show-sql: true
+     hibernate:
+        ddl-auto: ${DATASOURCE_DDL_AUTO:none}
+     properties:
+        hibernate:
+           dialect: ${DATASOURCE_DIALECT:org.hibernate.dialect.H2Dialect}
+   datasource:
+    driverClassName: ${DATASOURCE_DRIVER:org.h2.Driver}
+    url: ${DATASOURCE_URL:jdbc:h2:mem:test_db;MODE=ORACLE;DB_CLOSE_DELAY=-1}
+    username: ${DATASOURCE_USERNAME:sa}
+    password: ${DATASOURCE_PASSWORD:password}
+    entity-package: com.archetype.app.infrastructure.out.db.jpa.entity
+    repository-package: com.archetype.app.infrastructure.out.db.jpa.repository
+   #datasource-secondary:
+    #driverClassName: ${DATASOURCE_DRIVER_2:org.h2.Driver}
+    #url:  ${DATASOURCE_URL_2:jdbc:h2:mem:test_db;MODE=ORACLE;DB_CLOSE_DELAY=-1}
+    #username: ${DATASOURCE_USERNAME_2:sa}
+    #password: ${DATASOURCE_PASSWORD_2:password}
+    #dialect: ${DATASOURCE_DIALECT_2:org.hibernate.dialect.H2Dialect}
+    #ddl-auto: ${DATASOURCE_DDL_AUTO_2:none}
+   sql:
+    init:
+      mode: always
+      continue-on-error: true
+      #data-locations: classpath:db/data.sql
+#Spring Boot 3.1 upgrades to Hibernate 6.2, so upgrading SB to 3.1.x fixes strategy = GenerationType.AUTO
+   #jpa:
+    #properties:
+      #hibernate.query.mutation_strategy: org.hibernate.query.sqm.mutation.internal.inline.InlineMutationStrategy
+      #hibernate.query.mutation_strategy.global_temporary.create_tables: false
+      #hibernate.query.mutation_strategy.global_temporary.drop_tables: false
+
