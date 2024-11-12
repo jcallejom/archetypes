@@ -3,19 +3,26 @@ receivers:
     protocols:
       grpc:
         endpoint: otel-collector:4317
-      #http:
-       #endpoint: otel-collector:4318
+      http:
+        endpoint: otel-collector:4318
 exporters:
   otlp:
-    endpoint: jaeger:14250
+    #endpoint: "jaeger:14250"
+    endpoint: "jaeger:4318"
     tls:
       insecure: true
-
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+    #enable_open_metrics: true
+    const_labels:
+        label1: value1
 processors:
   batch:
 
 extensions:
   health_check:
+  pprof:
+  zpages:
 
 service:
   extensions: [health_check]
@@ -31,4 +38,4 @@ service:
     metrics:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp]
+      exporters: [otlp,prometheus]

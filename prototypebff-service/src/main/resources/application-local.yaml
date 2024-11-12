@@ -34,6 +34,7 @@ spring:
      #path: /h2-console
      #port: 8089
 springdoc:
+  show-actuator: true
   swagger-ui:
     path: /swagger-ui # swagger custom path
     enabled: true  # Disabling the swagger-ui production enviroments always false

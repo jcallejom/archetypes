@@ -4,8 +4,8 @@ spring:
 server:
     port: 8082
     
-tracing:
-    url: http://localhost:4318/v1/traces
+#tracing:
+    #url: http://localhost:4318/v1/traces
 
 management:
  tracing:
