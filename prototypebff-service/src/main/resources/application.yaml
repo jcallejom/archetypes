@@ -1,6 +1,10 @@
 server:
   port: 8080
 spring:
+  #autoconfigure:
+      #exclude: org.springframework.boot.actuate.autoconfigure.tracing.OpenTelemetryAutoConfiguration, org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration
+      #exclude: org.springframework.boot.actuate.autoconfigure.tracing.OpenTelemetryAutoConfiguration, org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration
+
   application:
     name: prototypebff-service
   #kafka:
@@ -75,30 +79,35 @@ management:
     web:
       #base-path: /ocp-nsp-sorteo
       exposure:
-       #include: '*'
-       include: health, metrics, prometheus
+       include: '*'
+       #include: health, metrics, prometheus
   endpoint:
     health:
       show-details: ALWAYS
   metrics:
     tags:
-      application: ${spring.application.name}      
-  zipkin:
-    tracing:
+      application: ${spring.application.name}   
+  #zipkin:
+    #tracing:
       #endpoint: http://localhost:4317 
-      endpoint: http://zipkin:9411/api/v2/spans   
+     # endpoint: http://zipkin:9411/api/v2/spans   
   otlp:
     tracing:
       #endpoint: http://localhost:4317
-      endpoint: http://localhost:4318/v1/traces
+      #endpoint: http://localhost:4318/v1/traces
+      endpoint: http://localhost:4318
     metrics:
       export:
         #url: http://localhost:4317 
-        url: http://localhost:4318/v1/metrics
+        #url: http://localhost:4318/v1/metrics
+        url: http://localhost:4318
         step: 10s
 logging:
   pattern:
-    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'      
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+  level:
+    org:
+     springframework: ${LOG:DEBUG}       
 ######old jaeger######
 #opentracing:
   #jaeger:

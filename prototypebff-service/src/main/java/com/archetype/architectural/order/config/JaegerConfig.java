@@ -1,13 +1,16 @@
 package com.archetype.architectural.order.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-//import io.opentelemetry.exporter.otlp.http.trace.OtlpHttpSpanExporter;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.OpenTelemetry;
 
-@Configuration
+//@ConditionalOnProperty(prefix = "management.tracing", name = "enabled", havingValue = "false")
+//@Configuration
 public class JaegerConfig {
+//	BraveAutoConfiguration config;
+//	
+//	OpenTelemetryAutoConfiguration op;
 	
 //	@Bean
 //	OtlpHttpSpanExporter otlpHttpSpanExporter(@Value("${tracing.url}") String url) {
@@ -15,12 +18,37 @@ public class JaegerConfig {
 //	            .setEndpoint(url)
 //	            .build();
 //	}
+	/*Desactiva configuracion tracer por defecto
+    @Bean
+    Tracer tracer() {
+        return Tracer.NOOP;
+    }*/
+	/*Desactiva configuracion tracer/regesitry por defecto
+    @Bean
+    ObservationRegistry observationRegistry() {
+        return ObservationRegistry.NOOP;
+    }*/
 
+//		@Bean
+//		public OpenTelemetry openTelemetry() {
+//		  return GlobalOpenTelemetry.get();
+//		}
+//	@Primary
 //	@Bean
 //	OtlpHttpSpanExporter otlpHttpSpanExporter() {
 //	    return OtlpHttpSpanExporter.builder()
 //	                .build();
 //	}
+//	  @Bean
+//	    public Sampler buildAlwaysSampler() {
+//		  return Sampler.alwaysOn();
+//	    }
+	/*solo vale con opentelemetry-exporter-zipkin 
+	@Bean
+	ZipkinSpanExporter zipkinSpanExporter() {
+	    return ZipkinSpanExporter.builder()
+	                .build();
+	}*/
 //    @Value("${opentracing.jaeger.enabled:false}")
 //    private boolean jaegerEnabled;
 //

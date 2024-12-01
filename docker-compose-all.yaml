@@ -72,76 +72,87 @@ services:
 #jaeger service
 ##########################################################################
   jaeger:
-    container_name: jaeger-service
+    container_name: jaeger
     image: "jaegertracing/all-in-one:latest" ##1.125
+    restart: always
     ports:
-        - "5775:5775/udp"
-        - "6831:6831/udp"
-        - "6832:6832/udp"
-        - "5778:5778"
         - "16686:16686"
-        - "4318:4318"
         - "14268:14268"
-        - "9411:9411"
+        - "14250:14250"
+        - "4318:4318" 
+        - "4317:4317" 
     environment:
-      - COLLECTOR_OTLP_ENABLED=true
-###
-  prototypebff-service:
-      container_name: prototypebff-service
-      image: prototypebff-service:0.0.1-SNAPSHOT
-      environment:
-        DB_HOST: postgres_db:5432
-        KAFKA_HOST: kafka
-        JAEGER_HOST: jaeger 
-        JAVA_OPTS:
-          -Xms256M 
-          -Xmx256M
-      ports:
-        - "8080:8080"
-      depends_on:
+        - COLLECTOR_OTLP_ENABLED=true
+  otel-collector:
+    container_name: otel-collector
+    image: otel/opentelemetry-collector:latest
+    restart: always
+    command: [ "--config=/etc/otelcol-contrib/otel-collector-config.yaml" ]
+    volumes:
+        #- ./otel-collector-config.yaml:/etc/otel-collector-config.yaml:Z
+        - ./docker/collector/otel-collector-config.yaml:/etc/otelcol-contrib/otel-collector-config.yaml:Z
+    ports:
+        #- "13133:13133" 
+        #- "4317:4317" #OTLP gRPC receiver  
+        #- "4318:4318"#OTLP http receiver
+        - "1888:1888" # pprof extension
+        - "8888:8888" # Prometheus metrics exposed by the Collector
+        - "8889:8889" # Prometheus exporter metrics
+        - "13133:13133" # health_check extension
+        - "4317" # OTLP gRPC receiver
+        - "4318" # OTLP http receiver
+        - "55679:55679" # zpages extension              
+    depends_on:
         - jaeger
-        - kafka
-##
-  prototype-orchestrator:
-    container_name: prototype-orchestrator
-    image: prototype-orchestrator:0.0.1-SNAPSHOT
-    environment:
-       KAFKA_HOST: kafka 
-       JAEGER_HOST: jaeger 
-       JAVA_OPTS:
-         -Xms256M 
-         -Xmx256M        
-    ports:
-       - "8083:8083"
-    depends_on:
-      - jaeger
-      - kafka
-###
-  command-inventory-service:
-    container_name: command-inventory-service
-    image: command-inventory-service:0.0.1-SNAPSHOT
-    environment:
-       JAEGER_HOST: jaeger 
-       JAVA_OPTS:
-         -Xms256M 
-         -Xmx256M             
-    ports:
-      - "8081:8081"
-    depends_on:
-      - jaeger
-###
-  command-payment-service:
-    container_name: command-payment-service
-    image: command-payment-service:0.0.1-SNAPSHOT
-    environment:
-       JAEGER_HOST: jaeger 
-       JAVA_OPTS:
-         -Xms256M 
-         -Xmx256M             
-    ports:
-        - "8082:8082"
-    depends_on:
-      - jaeger                               
+        - zipkin-all-in-one
+        - prometheus
+##########################################################################     
+#zipkin service
+##########################################################################
+  zipkin-all-in-one:
+      container_name: zipkin
+      image: openzipkin/zipkin:latest
+      restart: always
+      ports:
+        - "9411:9411"
+##########################################################################
+#prometheus service
+##########################################################################        
+  prometheus:
+      container_name: prometheus
+      image: prom/prometheus
+      volumes:
+         - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      command:
+         - --config.file=/etc/prometheus/prometheus.yml
+         #Necesarias para configuracion con ottel
+         - --enable-feature=exemplar-storage
+         - --web.enable-remote-write-receiver
+      restart: always
+      ports:
+         - '9090:9090'
+
+
+  grafana:
+      container_name: grafana
+      image: grafana/grafana
+      volumes:
+        - ./docker/grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+      restart: always
+      ports:
+        - "3000:3000"
+      depends_on:
+        - prometheus
+        - jaeger
+  prototypebff-service:
+      build: ./
+      container_name: prototypebff-service
+      environment:
+         OTEL_TRACES_EXPORTER: "logging"
+         OTEL_METRICS_EXPORTER: "logging"
+         OTEL_LOGS_EXPORTER: "logging"
+      ports:
+         - "8080:8080"                           
 volumes:
   postgres_data:
      driver: local
