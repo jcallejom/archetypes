@@ -72,16 +72,22 @@ services:
     networks:
       - cqrs-net    
 #database admin service
-  adminer:
-    #container_name: adminer
-    image: adminer
-    restart: always
-    depends_on: 
-      - mongodb
+  mongo-express:
+    image: mongo-express
+    environment:
+        - ME_CONFIG_MONGODB_SERVER=mongodb
+        - ME_CONFIG_MONGODB_PORT=27017
+        - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
+        - ME_CONFIG_MONGODB_AUTH_DATABASE=admin
+        - ME_CONFIG_MONGODB_AUTH_USERNAME=admin
+        - ME_CONFIG_MONGODB_AUTH_PASSWORD=adminpw
+        - ME_CONFIG_BASICAUTH_USERNAME=expresslogin
+        - ME_CONFIG_BASICAUTH_PASSWORD=expresspw
+        #- ME_CONFIG_BASICAUTH_PASSWORD=${MONGOEXPRESS_PASSWORD}
+    depends_on:
+        - mongodb
     ports:
-       - 9090:8080
-    networks:
-      - cqrs-net
+      - "8899:8081"
  ##########################################################################     
  #dbeaver service
  ##########################################################################       

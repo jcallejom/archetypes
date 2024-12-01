@@ -1,0 +1,13 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: prototypeactions
+      username: ${DATASOURCE_USERNAME:admin}
+      password: ${DATASOURCE_PASSWORD:adminpw}
+      authentication-database: admin
+      auto-index-creation: true
+
+de.flapdoodle.mongodb.embedded.version: 5.0.5
+     
