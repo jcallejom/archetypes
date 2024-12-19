@@ -2,7 +2,6 @@
 .metadata
 workarchetypes.rar
 architectural-pattern/
-saga-orchestration-archetype/
 demo/
 
 target/
