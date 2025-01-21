@@ -1,15 +1,18 @@
 #log properties
 logging:
   level:
+    #root: INFO
     org:
-      springframework: ${LOG:DEBUG}
+      springframework: ${LOG:INFO}
+      hibernate: ${HIB_LOG:INFO}
+        #type: INFO
+        #SQL: ${HIB_LOG:INFO}
       #security: ${SEC_LOG:INFO}
     es:
       once:
-        newsop: ${ASP_LOG:DEBUG}
-logging.level.org.springframework.security: ${SEC_LOG:DEBUG}
-logger:
-   org.hibernate.SQL: ${HIB_LOG:INFO}
+        newsop: ${ASP_LOG:INFO}
+#logging.level.org.springframework.security: ${SEC_LOG:DEBUG}
+#logger.org.hibernate.SQL: ${HIB_LOG:INFO}
 #Apic doc properties
 springdoc:
   show-actuator: true
@@ -25,7 +28,7 @@ springdoc:
 spring:
    jpa:
      defer-datasource-initialization: true
-     show-sql: true
+     show-sql: false
      hibernate:
         ddl-auto: ${DATASOURCE_DDL_AUTO:none}
      properties:

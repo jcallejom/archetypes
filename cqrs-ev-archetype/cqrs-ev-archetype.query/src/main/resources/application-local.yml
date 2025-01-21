@@ -23,6 +23,8 @@ spring: #http://localhost:8082/h2-console
       driverClassName: org.h2.Driver
       username: sa
       password: password
+      hikari:
+        maximum-pool-size: 10
       #hikari.schema: oracleuser
    sql:
     init:

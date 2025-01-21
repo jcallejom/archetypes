@@ -1,6 +1,7 @@
 package com.archetype.app.cmd.api.controllers;
 
 import java.text.MessageFormat;
+import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,7 +50,8 @@ public class ChangePrototypeDayController implements IChangePrototypeDayControll
 	public ResponseEntity<BaseResponse> changePrototypeDay(@Valid @PathVariable(value="id") String id,@RequestBody ChangePrototypeDayCommand command){
 		try {	
 //			command.setId(id);
-			commandDispatcher.send(mapper.clone(command,id));
+			create(command,id);
+//			commandDispatcher.send(mapper.clone(command,id));
 			return new ResponseEntity<BaseResponse>(new BaseResponse("The prototype´s day has been change successfully"),HttpStatus.OK);
 		}catch (IllegalStateException e) {
 			logger.log(Level.WARNING,MessageFormat.format("Could not change prototype´s day  - {0} ", e.toString()));
@@ -61,5 +63,18 @@ public class ChangePrototypeDayController implements IChangePrototypeDayControll
 
 		}
 	}
-	
+	private final long MAX=1000;
+	private void create(ChangePrototypeDayCommand command,String id){
+		long start=System.currentTimeMillis();
+		for(int i=0;i<=MAX;i++)
+			
+			commandDispatcher.send(mapper.clone(
+					ChangePrototypeDayCommand.builder()
+					.prototypeDay("25/10/2013")
+					.build() ,id)
+					
+					);
+		logger.log(Level.INFO,"tiempo envio: {0}",System.currentTimeMillis()-start);
+
+	}
 }

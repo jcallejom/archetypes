@@ -2,7 +2,6 @@ package com.archetype.app.cmd.infrastruture;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +51,8 @@ public class PrototypeEventStore implements EventStore{
 		var version =expectedVersion;
 		for(var event: events) {
 		
+			
+			
 			if(event instanceof PrototypeOpenedEvent) {
 				var allEventStream =eventStoreRepository.findByEventType(event.getClass().getTypeName());		
 				var result= allEventStream.stream()
@@ -85,9 +86,9 @@ public class PrototypeEventStore implements EventStore{
 			if(!persistEvent.getId().isEmpty()) {
 				//el nombre del topic deberia ser el mismo que el de la clase que genera este evento
 				//indepotencia-> la key es el nombre de la clase y el id del evento
-//				eventProducer.produce(event.getClass().getSimpleName(),event.getClass().getSimpleName()+ event.getId(),event);
-				eventProducer.produce(event.getClass().getSimpleName(), event);
-				//eventProducer.produce("${spring.kafka.template.default-topic}", event);
+				eventProducer.produceASyn(event.getClass().getSimpleName(),event.getClass().getSimpleName()+ "-" + event.getId(),event);
+//				eventProducer.produce(event.getClass().getSimpleName(), event);
+
 			}
 		}
 		

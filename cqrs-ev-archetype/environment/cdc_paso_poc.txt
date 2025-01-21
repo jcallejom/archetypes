@@ -1,0 +1,84 @@
+
+1 ejecutamos el doccke compose  up -d
+2 docker ps -->verificamos conector de delbezium puerto 8003
+3.registrar propiedades del conector en yml (springboot-debezium-mongo-replicator\environment\debezium)
+curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/ -d @conector-mysql.json
+4
+
+  mysql:
+    image: debezium/example-mysql:1.5
+    container_name: mysql
+    ports:
+      - 1521:1521 
+    environment:
+	  
+   -e ORACLE_SID=ORCLCDB 
+  -e ORACLE_PDB=ORCLPDB1 
+  -e ORACLE_PWD=oraclepw 
+ docker exec -e ORACLE_SID=ORCLCDB -it oracle21c sqlplus sys as sysdba
+ 
+SELECT GROUP#, BYTES/1024/1024 SIZE_MB, STATUS FROM V$LOG ORDER BY 1;
+hacemos para los 3 grupos
+ALTER DATABASE CLEAR LOGFILE GROUP 3;
+ALTER DATABASE DROP LOGFILE GROUP 3;
+ALTER DATABASE ADD LOGFILE GROUP 3 ('/opt/oracle/oradata/ORCLCDB/redo03.log') size 400M REUSE;
+
+
+cambiar de log file 
+ALTER DATABASE OPEN;
+ALTER SYSTEM SWITCH LOGFILE;
+modificamoe el grupo 1 
+
+CONNECT sys/oraclepw@ORCLCDB as sysdba;
+CREATE TABLESPACE logminer_tbs DATAFILE '/opt/oracle/oradata/ORCLCDB/logminer_tbs.dbf' SIZE 25M REUSE AUTOEXTEND ON MAXSIZE UNLIMITED;
+
+CONNECT sys/oraclepw@ORCLPDB1 as sysdba;
+CREATE TABLESPACE logminer_tbs DATAFILE '/opt/oracle/oradata/ORCLCDB/ORCLPDB1/logminer_tbs.dbf' SIZE 25M REUSE AUTOEXTEND ON MAXSIZE UNLIMITED;
+
+CREATE USER c##dbzuser IDENTIFIED BY dbz DEFAULT TABLESPACE LOGMINER_TBS QUOTA UNLIMITED ON LOGMINER_TBS CONTAINER=ALL;
+
+docker exec -it -e ORACLE_SID=ORCLPDB1 dbz_oracle21 sqlplus c##dbzuser@ORCLPDB1
+
+docker exec -it -e ORACLE_SID=ORCLPDB1 oracle21c sqlplus c##dbzuser@ORCLPDB1
+
+ docker exec -e ORACLE_SID=ORCLPDB1 -it oracle21c sqlplus sys as sysdba
+ 
+  docker exec -e ORACLE_SID=ORCLPDB1 -it oracle21c sqlplus c##dbzuser as sysdba
+ 
+ docker exec -e ORACLE_SID=ORCLPDB1 -it oracle21c sqlplus sys@ORCLPDB1
+ 
+curl -s -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/ -d @debezium/connector-mysql.json > /dev/null
+
+curl -s -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/ -d @debezium/connector-oracle.json > /dev/null
+
+ver topic de kakfka
+docker exec -it kafka /kafka/bin/kafka-console-consumer.sh \
+  --bootstrap-server 0.0.0.0:9092 \
+  --from-beginning \
+  --property print.key=true \
+  --topic server1.C__DBZUSER.CUSTOMERS
+
+
+    spring.datasource.url= jdbc:oracle:thin:@localhost:1521/xe
+    spring.datasource.username=pringboot
+    spring.datasource.password=springboot1
+    spring.datasource.driver-class-name= oracle.jdbc.OracleDriver
+	
+	        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc7</artifactId>
+            <version>12.1.0.1</version>
+			</dependency>
+		
+		<dependency>
+		<groupId>com.oracle</groupId>
+		<artifactId>ojdbc14</artifactId>
+		<version>10.2.0.3.0</version>
+		</dependency>
+		
+		<dependency>
+    <groupId>com.oracle.ojdbc</groupId>
+    <artifactId>ojdbc8</artifactId>
+    <version>19.3.0.0</version>
+</dependency
+

@@ -84,6 +84,7 @@
 				</dependency>
 
     </dependencies>
+    <!-- 
   <distributionManagement>
         <repository>
             <id>commons-librarys-repository</id>
@@ -97,6 +98,6 @@
             <url>https://jfrog-io.infra.ocp.once.org/artifactory/commons-librarys-mvn-snapshot-virtual/</url>        
 	   	</snapshotRepository>
 	</distributionManagement>
-  
+  -->
  </project>
  

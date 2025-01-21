@@ -1,15 +1,14 @@
 #log properties
 logging:
   level:
+    #root: INFO
     org:
-      springframework: ${LOG:DEBUG}
+      springframework: ${LOG:INFO}
+      hibernate: ${HIB_LOG:INFO}
       #security: ${SEC_LOG:INFO}
     es:
       once:
         newsop: ${ASP_LOG:DEBUG}
-logging.level.org.springframework.security: ${SEC_LOG:DEBUG}
-logger:
-   org.hibernate.SQL: ${HIB_LOG:INFO}
 #Apic doc properties
 springdoc:
   show-actuator: true
@@ -36,6 +35,7 @@ spring:
       bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      #acks: 1 //esto indica que vamos a realizar acuse de recibo en al menos 1 nodo, poner un 0 es que da igual, all inidca que todos los nodos deben mandar el acknolege
     template:
       default-topic: "prototype_availability" 
 

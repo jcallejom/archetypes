@@ -1,0 +1,74 @@
+version: '3'
+
+services:
+  zookeeper:
+    image: quay.io/debezium/zookeeper:2.1.1.Final
+    ports:
+     - 2181:2181
+     - 2888:2888
+     - 3888:3888
+  kafka:
+    image: quay.io/debezium/kafka:2.1.1.Final
+    ports:
+     - 9092:9092
+    links:
+     - zookeeper
+    environment:
+     - ZOOKEEPER_CONNECT=zookeeper:2181
+     - ALLOW_PLAINTEXT_LISTENER=yes
+     - KAFKA_LISTENERS=LISTENER_SEVICE://:9092,LISTENER_KAFDROP://kafka:29092
+     - KAFKA_ADVERTISED_LISTENERS=LISTENER_SEVICE://localhost:9092,LISTENER_KAFDROP://kafka:29092
+     - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP= LISTENER_SEVICE:PLAINTEXT, LISTENER_KAFDROP:PLAINTEXT
+     - KAFKA_INTER_BROKER_LISTENER_NAME= LISTENER_SEVICE
+  connect:
+    image: quay.io/debezium/connect:2.1.1.Final
+    ports:
+     - 8083:8083
+    links:
+     - kafka
+     - order-db
+    environment:
+     - BOOTSTRAP_SERVERS=kafka:29092
+     - GROUP_ID=1
+     - CONFIG_STORAGE_TOPIC=my_connect_configs
+     - OFFSET_STORAGE_TOPIC=my_connect_offsets
+     - STATUS_STORAGE_TOPIC=my_connect_statuses
+     - KAFKA_LOG4J_LOGGERS=io.debezium.connector=DEBUG
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:29092,zookeeper:2181"
+    depends_on:
+      - kafka
+      - zookeeper
+
+  order-db:
+    image: quay.io/debezium/example-postgres:2.1.1.Final
+    ports:
+     - 5433:5432
+    healthcheck:
+      test: "pg_isready -U postgresuser -d orderdb"
+      interval: 2s
+      timeout: 20s
+      retries: 10
+    environment:
+     - POSTGRES_USER=postgresuser
+     - POSTGRES_PASSWORD=postgrespw
+     - POSTGRES_DB=orderdb
+##########################################################################     
+#dbeaver service
+##########################################################################       
+  dbeaver:
+    image: dbeaver/cloudbeaver
+    restart: always
+    ports:
+      - 8978:8978
+    volumes: 
+       - ./../../../cloudbeaver_data:/opt/cloudbeaver/workspace   
+    depends_on:
+      - order-db
+volumes:
+    cloudbeaver_data:
+       driver: local  

@@ -1,10 +1,14 @@
 package com.archetype.app.cmd.api.controllers;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.info.ProjectInfoProperties.Build;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,9 +21,6 @@ import com.archetype.app.cmd.api.vo.PrototypeResponse;
 import com.archetype.cqrsev.core.infrastructure.CommandDispatcher;
 import com.archetype.cqrsev.core.vo.BaseResponse;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 // TODO: Auto-generated Javadoc
@@ -49,7 +50,7 @@ public class OpenPrototypeController implements IOpenPrototypeController {
 //		var id=UUID.randomUUID().toString();
 //		command.setId(id);
 		try {
-			
+//			create(command);
 			commandDispatcher.send(command);
 			return new ResponseEntity<BaseResponse>(new PrototypeResponse("The prototype has been saved successfully",command.getPrototypeCode()),HttpStatus.CREATED);
 //			return new ResponseEntity<BaseResponse>(new PrototypeResponse("The search has been saved successfully",id),HttpStatus.CREATED);
@@ -68,5 +69,19 @@ public class OpenPrototypeController implements IOpenPrototypeController {
 //			return new ResponseEntity<BaseResponse>(new PrototypeResponse(safeErrorMessage,id),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+	private final long MAX=28200;
+	private void create(OpenPrototypeCommand command){
+		long start=System.currentTimeMillis();
+		for(int i=28101;i<=MAX;i++)
+			
+			commandDispatcher.send(OpenPrototypeCommand.builder()
+					.prototypeNumbers(command.getPrototypeNumbers())
+					.prototypeDay(command.getPrototypeDay())
+//					.prototypeCode(UUID.randomUUID().toString())
+					.prototypeCode(String.valueOf(i))
+					.build());
+		
+		logger.log(Level.INFO,"tiempo envio: {0}",System.currentTimeMillis()-start);
+		
+	}
 }
