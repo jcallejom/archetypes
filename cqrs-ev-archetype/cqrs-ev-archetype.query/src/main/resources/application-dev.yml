@@ -56,5 +56,5 @@ spring:
               packages: '*'
     template:
       default-topic: "prototype_availability" 
-  
+      observation-enabled: true
    

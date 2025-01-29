@@ -50,8 +50,8 @@ public class ChangePrototypeDayController implements IChangePrototypeDayControll
 	public ResponseEntity<BaseResponse> changePrototypeDay(@Valid @PathVariable(value="id") String id,@RequestBody ChangePrototypeDayCommand command){
 		try {	
 //			command.setId(id);
-			create(command,id);
-//			commandDispatcher.send(mapper.clone(command,id));
+//			create(command,id);
+			commandDispatcher.send(mapper.clone(command,id));
 			return new ResponseEntity<BaseResponse>(new BaseResponse("The prototype´s day has been change successfully"),HttpStatus.OK);
 		}catch (IllegalStateException e) {
 			logger.log(Level.WARNING,MessageFormat.format("Could not change prototype´s day  - {0} ", e.toString()));

@@ -104,7 +104,7 @@ public class PrototypeEventStore implements EventStore{
 	public List<BaseEvent> getEvent(String aggregateId) {
 		var eventStream =eventStoreRepository.findByAggregateIdentifier(aggregateId);
 //		List<EventModel> eventStream =eventStoreRepository.findByAggregateIdentifier(aggregateId);
-		if(eventStream==null && eventStream.isEmpty())
+		if(eventStream==null || eventStream.isEmpty())
 			throw new AggregateNotFoundException("the search is wrong");
 
 		return eventStream.stream().map(x -> x.getEventData()).collect(Collectors.toList());

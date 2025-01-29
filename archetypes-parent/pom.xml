@@ -16,7 +16,7 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<java.version>17</java.version>
-		<spring-boot.version>3.1.2</spring-boot.version>
+		<spring-boot.version>3.2.5</spring-boot.version>
 		<postgres.version>42.6.0</postgres.version>
 		<oracle.version>21.9.0.0</oracle.version>
 		<mysql.version>8.0.33</mysql.version>

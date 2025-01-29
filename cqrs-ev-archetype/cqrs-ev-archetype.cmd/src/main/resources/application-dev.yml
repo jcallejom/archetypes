@@ -3,7 +3,7 @@ logging:
   level:
     #root: INFO
     org:
-      springframework: ${LOG:INFO}
+      springframework: ${LOG:DEBUG}
       hibernate: ${HIB_LOG:INFO}
       #security: ${SEC_LOG:INFO}
     es:
@@ -38,5 +38,6 @@ spring:
       #acks: 1 //esto indica que vamos a realizar acuse de recibo en al menos 1 nodo, poner un 0 es que da igual, all inidca que todos los nodos deben mandar el acknolege
     template:
       default-topic: "prototype_availability" 
+      observation-enabled: true
 
      
