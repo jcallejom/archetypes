@@ -6,8 +6,8 @@ public class MockTable {
 	public static PrototypeEntity dummyExampleTable() {
 		PrototypeEntity table = new PrototypeEntity();
 		
-		table.setId(1L);
-		table.setColumn("test1");
+		table.setId("1L");
+		table.setCampo("test1");
 		
 		return table;
 	}

@@ -6,11 +6,11 @@ server:
     context-path: /${spring.application.name}
 spring:
    application:
-    name: nsp-archetype-rest-jpa
+    name: archetype-api-composite
    profiles:
-     active: dev
+     active: dev, security
    config:
-     import: "classpath:/application-dev.yml"
+     import: "classpath:/application-dev.yml,classpath:/application-security.yml"
 
 management:
   endpoints:
@@ -18,27 +18,42 @@ management:
       #base-path: /ocp-nsp-sorteo
       exposure:
         #include: '*'
-        include: health, metrics, prometheus
+        include: health, metrics , prometheus
   endpoint:
     health:
       show-details: ALWAYS
   metrics:
    tags:
     application: ${spring.application.name}
-#  jpa:
-#     show-sql: true
-#     hibernate:
-#        ddl-auto: ${DATASOURCE_DDL_AUTO:none}
-#     properties:
-#        hibernate:
-#           dialect: org.hibernate.dialect.PostgreSQLDialect
-#  datasource:
-#    driverClassName: ${DATASOURCE_DRIVER:org.postgresql.Driver}
-#    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:3432/databasename}
-#    username: ${DATASOURCE_USERNAME:postgresuser}
-#    password: ${DATASOURCE_PASSWORD:postgrespw}
-#  sql:
-#    init:
-#      mode: always
-#      continue-on-error: true
-#    
+    
+  otlp:
+    #tracing:
+          #endpoint: http://localhost:4317
+      #endpoint: http://localhost:4318/v1/traces
+      #endpoint: http://localhost:4318
+    metrics:
+      export:
+            #url: http://localhost:4317 
+        url: http://localhost:4318/v1/metrics
+        #url: http://localhost:4318
+        step: 10s
+otel:
+  service:
+    name: ${spring.application.name}
+  exporter:
+    otlp:
+      #protocol: grpc
+      #endpoint: http://localhost:4317
+      endpoint: http://localhost:4318
+  metrics:
+    exporter:
+      - "prometheus"
+      - "looging"
+      
+  instrumentation:
+    jdbc.enabled: true
+    common.db-statement-sanitizer.enabled: true ##Enables the DB statement sanitization.ALL TYPES DBS
+    #jdbc.statement-sanitizer.enabled: true ##Enables the only  jdbc statement sanitization.
+    micrometer.enabled: true
+    spring-webflux.enabled: true
+    

@@ -8,9 +8,10 @@ import org.mapstruct.MappingTarget;
 
 import com.archetype.app.domain.Prototype;
 import com.archetype.app.infrastructure.out.db.jpa.entity.PrototypeEntity;
+import com.archetype.base.core.mapper.BaseMapperEntity;
 
 @Mapper(componentModel = "spring" , collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE)
-public interface PrototypeMapperDomain {
+public interface PrototypeMapperDomain extends BaseMapperEntity<Prototype,PrototypeEntity>{
 	@Mapping(target = "id", ignore = true)
 	PrototypeEntity toDomain (Prototype prototype);
 	

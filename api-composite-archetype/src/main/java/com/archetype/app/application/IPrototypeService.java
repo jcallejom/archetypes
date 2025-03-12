@@ -10,13 +10,13 @@ import com.archetype.base.core.exception.FunctionalException;
 
 public interface IPrototypeService {
 	
-	public Prototype get(Long id);
+	public Prototype get(String id);
 
 	public List<Prototype> get();
 
 	public Prototype save(Prototype data);
 	
-	public Prototype update(Long id,Prototype data) throws FunctionalException;
+	public Prototype update(String id,Prototype data);
 	
 	public Page<Prototype>findAllPage(Pageable pageable);
 }

@@ -1,4 +1,4 @@
-package com.archetype.app.infrastructure.out.db.jpa.repository;
+package com.archetype.app.domain.repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,23 +8,27 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.archetype.app.domain.Prototype;
 import com.archetype.app.domain.mapper.PrototypeMapperDomain;
-import com.archetype.app.domain.repository.IPrototypeRepository;
 import com.archetype.app.infrastructure.out.db.jpa.entity.PrototypeEntity;
+import com.archetype.app.infrastructure.out.db.jpa.repository.IPrototypeEntityRepository;
 import com.archetype.app.shared.PrototypeErrors;
-import com.archetype.base.core.exception.FunctionalException;
 import com.archetype.base.core.exception.NotFoundException;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Repository
 public class PrototypeEntityRepository implements IPrototypeRepository{
 	
 	@Autowired
-	IPrototypeEntityRepository jpaRepository;
+	private IPrototypeEntityRepository jpaRepository;
 
 	@Autowired
-	PrototypeMapperDomain mapperDomain;
+	private PrototypeMapperDomain mapperDomain;
 
 	@Override
 	public Prototype save(Prototype data) {
@@ -48,13 +52,17 @@ public class PrototypeEntityRepository implements IPrototypeRepository{
 	}
 
 	@Override
-	public Prototype findById(Long id) {
+	public Prototype findById(String id) {
 		return mapperDomain.toResponse(jpaRepository.findById(id).orElse(null));
+//		return mapperDomain.toResponse(jpaRepository.findById(id).orElseThrow(
+//				   ()-> new NotFoundException(PrototypeErrors.EXCEPTION_PROTOTYPE_ELEMENT_NOT_FOUND.getCode(),
+//						   String.format(PrototypeErrors.EXCEPTION_PROTOTYPE_ELEMENT_NOT_FOUND.getMessage(), id)
+//						   )));
 	
 	}
 
-	@Override
-	public Prototype update(Long id, Prototype data) throws FunctionalException{
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Prototype update(String id, Prototype data) {
 		PrototypeEntity updateEntity = mapperDomain.toDomain(data);
 		PrototypeEntity findEntity=jpaRepository.findById(id).orElseThrow(
 		   ()-> new NotFoundException(PrototypeErrors.EXCEPTION_PROTOTYPE_ELEMENT_NOT_FOUND.getCode(),

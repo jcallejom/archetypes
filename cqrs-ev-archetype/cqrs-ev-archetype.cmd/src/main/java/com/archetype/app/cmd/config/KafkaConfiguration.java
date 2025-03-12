@@ -11,14 +11,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.MicrometerProducerListener;
+import org.springframework.kafka.support.micrometer.KafkaRecordSenderContext;
+import org.springframework.kafka.support.micrometer.KafkaTemplateObservationConvention;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import io.micrometer.common.KeyValues;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -46,6 +50,7 @@ public class KafkaConfiguration {
 	  @Bean
 	  public MeterRegistry meterRegistry() {
 		  PrometheusMeterRegistry prometheusMeterRegistry=  new PrometheusMeterRegistry (PrometheusConfig.DEFAULT);
+		  
 		  return prometheusMeterRegistry;
 	  }
 	/*Producer*/
@@ -62,6 +67,7 @@ public class KafkaConfiguration {
 		 props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,JsonSerializer.class);
 		 return props;
 		 }
+	 @WithSpan(value = "cqrs.command:publish")
 	 @Bean//(name = "kafkaTemplatenuevo" )
 	 public KafkaTemplate<String, Object> kafkaTemplate() {
 		 Map<String, Object>senderProps= producerProps();
@@ -69,6 +75,15 @@ public class KafkaConfiguration {
 		 /*Añadir listener de mertricas prometeus*/
 		 producerFactory.addListener(new MicrometerProducerListener<String,Object> (meterRegistry()));
 		 KafkaTemplate<String, Object> template=new KafkaTemplate<>(producerFactory);
+		 /*añadir otel*/
+		 template.setObservationEnabled(true);
+		 template.setObservationConvention(new KafkaTemplateObservationConvention() {
+	         @Override
+	         public KeyValues getLowCardinalityKeyValues(KafkaRecordSenderContext context) {
+	            return KeyValues.of("topic", context.getDestination(),
+	                    "id", String.valueOf(context.getRecord().key()));
+	         }
+	      });
 		 return template;
 	 }
 

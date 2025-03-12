@@ -14,9 +14,9 @@ public interface IPrototypeRepository {
 
 	public List<Prototype> findAll();
 
-	public Prototype findById(Long id);
+	public Prototype findById(String id);
 	
-	public Prototype update(Long id, Prototype data) throws FunctionalException;
+	public Prototype update(String id, Prototype data);
 	
 	public Page<Prototype> findAllPage(Pageable page);
 }

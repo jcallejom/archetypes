@@ -16,7 +16,7 @@ import com.archetype.base.core.exception.model.GenericError;
  */
 //@ResponseStatus(GenericError.EXCEPTION_COM_ELEMENT_NOT_FOUND.getHttpCode())
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class NotFoundException extends FunctionalException {
+public class NotFoundException extends TechnicalRuntimeException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -39,7 +39,9 @@ public class NotFoundException extends FunctionalException {
 	public NotFoundException(final String errorCode, final String errorMessage) {
 		super(errorCode, errorMessage, GenericError.EXCEPTION_COM_ELEMENT_NOT_FOUND.getHttpCode());
 	}
-
+	public NotFoundException(final String errorCode, final String errorMessage, final Integer httpCode) {
+		super(errorCode, errorMessage, httpCode);
+	}
 	/**
 	 * Instantiates a new not found exception.
 	 *

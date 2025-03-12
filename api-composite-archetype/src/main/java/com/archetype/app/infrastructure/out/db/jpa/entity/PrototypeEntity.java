@@ -1,6 +1,6 @@
 package com.archetype.app.infrastructure.out.db.jpa.entity;
 
-import com.archetype.base.core.model.BaseEntity;
+import com.archetype.base.core.model.VersionEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,13 +20,15 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper=false)
 @Entity
-@Table(name = "prototype", schema = "public")
-//public class PrototypeEntity extends VersionEntity{
-public class PrototypeEntity implements BaseEntity{	
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-	Long id;
+@Table(name = "prototype")
+public class PrototypeEntity extends VersionEntity{
+//public class PrototypeEntity implements BaseEntity{	
 	
-	@Column(name = "column", nullable = true, unique = false)
-	String column;
+	@EqualsAndHashCode.Exclude
+	@Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+	private String id;
+	
+	@Column(name = "campo", nullable = true, unique = false)
+	private String campo;
 }

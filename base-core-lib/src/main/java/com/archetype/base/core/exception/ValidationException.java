@@ -16,7 +16,7 @@ import com.archetype.base.core.exception.model.GenericError;
  */
 //@ResponseStatus( HttpStatus.valueOf(GenericError.EXCEPTION_COM_INVALID_DATA_FORMAT.getHttpCode()))
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class ValidationException extends FunctionalException {
+public class ValidationException extends TechnicalRuntimeException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -50,7 +50,9 @@ public class ValidationException extends FunctionalException {
 	public ValidationException(final BaseError error, final Throwable cause, final Object... vars) {
 		super(error, cause, vars);
 	}
-
+	public ValidationException(final String errorCode, final String errorMessage, final Integer httpCode) {
+		super(errorCode, errorMessage, httpCode);
+	}
 	/**
 	 * Instantiates a new validation exception.
 	 *
@@ -64,4 +66,5 @@ public class ValidationException extends FunctionalException {
 		super(errorCode, errorMessage, GenericError.EXCEPTION_COM_INVALID_DATA_FORMAT.getHttpCode(),
 				cause, vars);
 	}
+	
 }

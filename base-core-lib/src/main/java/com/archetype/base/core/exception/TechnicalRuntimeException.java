@@ -38,7 +38,9 @@ public class TechnicalRuntimeException extends MicroserviceRuntimeException {
 	public TechnicalRuntimeException(final String errorCode, final String errorMessage) {
 		super(errorCode, errorMessage, GenericError.EXCEPTION_COM_INTERNAL_ERROR.getHttpCode(), null, new Object[0]);
 	}
-
+	public TechnicalRuntimeException(final String errorCode, final String errorMessage, final Integer httpCode) {
+		super(errorCode, errorMessage, httpCode, null, "");
+	}
 	/**
 	 * Instantiates a new technical runtime exception.
 	 *
@@ -61,5 +63,9 @@ public class TechnicalRuntimeException extends MicroserviceRuntimeException {
 	public TechnicalRuntimeException(final String errorCode, final String errorMessage, final Throwable cause,
 			final Object... vars) {
 		super(errorCode, errorMessage, GenericError.EXCEPTION_COM_INTERNAL_ERROR.getHttpCode(), cause, vars);
+	}
+	public TechnicalRuntimeException(final String errorCode, final String errorMessage,  final Integer httpCode,
+			final Throwable cause, final Object... vars) {
+		super(errorCode, errorMessage, httpCode, cause, vars);
 	}
 }

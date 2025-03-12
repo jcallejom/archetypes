@@ -1,9 +1,10 @@
 package com.archetype.app.infrastructure.out.db.jpa.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.archetype.app.infrastructure.out.db.jpa.entity.PrototypeEntity;
-
-interface IPrototypeEntityRepository extends JpaRepository<PrototypeEntity, Long> {
+import com.archetype.base.core.repository.BaseRepository;
+@Repository
+public interface IPrototypeEntityRepository extends BaseRepository<PrototypeEntity, String> {
 
 }

@@ -168,11 +168,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
          </dependency>
-  		<!-- prometheus-->      
+  		<!-- prometheus    
       	<dependency>
 		  	 <groupId>io.micrometer</groupId>
 		 	 <artifactId>micrometer-registry-prometheus</artifactId>
-	  	</dependency>                                
+	  	</dependency>   -->                               
        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -342,6 +342,9 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
                     <!-- generate mappers -->
                     <annotationProcessorPaths>
                         <path>

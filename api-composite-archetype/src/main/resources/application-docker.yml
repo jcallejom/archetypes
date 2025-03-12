@@ -9,8 +9,10 @@ spring:
         hibernate:
            dialect: org.hibernate.dialect.OracleDialect
            #Spring Boot 3.1 upgrades to Hibernate 6.2, so upgrading SB to 3.1.x fixes strategy = GenerationType.AUTO
-           hql.bulk_id_strategy.global_temporary.create_tables: false
-           hql.bulk_id_strategy.global_temporary.drop_tables: false
+           #hql.bulk_id_strategy.global_temporary.create_tables: false #deprecated
+           #hql.bulk_id_strategy.global_temporary.drop_tables: false #deprecated
+           query.mutation_strategy.persistent.create_tables: false
+           query.mutation_strategy.global_temporary.drop_tables: false
   datasource:
     driverClassName: oracle.jdbc.OracleDriver
     url: jdbc:oracle:thin:@localhost:1521:XE

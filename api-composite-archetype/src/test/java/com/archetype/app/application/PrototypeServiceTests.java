@@ -12,20 +12,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.archetype.app.application.PrototypeService;
 import com.archetype.app.domain.Prototype;
 import com.archetype.app.domain.repository.IPrototypeRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class PrototypeServiceTests {
 
-	Prototype domainObj;
+	private Prototype domainObj;
 	
 	@Mock
-	IPrototypeRepository repository;
+	private IPrototypeRepository repository;
 	
 	@InjectMocks
-	PrototypeService service;
+	private PrototypeService service;
 	
 //	@InjectMocks
 //	ExampleMapper mapper;
@@ -37,7 +36,7 @@ public class PrototypeServiceTests {
 	@BeforeEach
 	void init() {
 //		domainObj = mapper.fromEntity(MockTable.dummyExampleTable());
-		domainObj = Prototype.builder().id(1L).column("c2").build();
+		domainObj = Prototype.builder().id("1L").campo("c2").build();
 	}
 	
 	@Test
@@ -48,18 +47,19 @@ public class PrototypeServiceTests {
 		List<Prototype> result = repository.findAll();
 		
 		assertEquals(expected.size(), result.size());
-		assertEquals(expected.get(0).getColumn(), result.get(0).getColumn());
+		assertEquals(expected.get(0).getCampo(), result.get(0).getCampo());
 	}
 	
 	@Test
 	public void findById() {
 		Prototype expected = domainObj;
 		
-		when(repository.findById(1L)).thenReturn(expected);
+		when(repository.findById("1L")).thenReturn(expected);
 		
-		Prototype result = repository.findById(1L);
+		Prototype result = repository.findById("1L");
 
 		assertEquals(expected.getId(), result.getId());
-		assertEquals(expected.getColumn(), result.getColumn());
+		assertEquals(expected.getCampo(), result.getCampo());
 	}
+	
 }

@@ -4,16 +4,17 @@ import com.archetype.base.core.model.dto.BaseVo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
-@Data
-public class Prototype extends BaseVo{
+@Getter
+@EqualsAndHashCode(callSuper = true)
+public final class Prototype extends BaseVo{
 
-	Long id;
+	private final String id;
 	
-	String column;
+	
+	private final String campo;
 }

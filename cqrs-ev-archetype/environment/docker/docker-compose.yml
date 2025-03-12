@@ -70,6 +70,7 @@ services:
         volumes:
             #allow *.sql, *.sql.gz, or *.sh and is execute only if data directory is empty
             - ./dbfiles:/docker-entrypoint-initdb.d
+            - ./dbfiles:/opt/oracle/scripts/setup
             - ./../../../oracle_data:/opt/oracle/oradata
             #- ./../oracle_data:/u01/app/oracle/oradata
         networks:

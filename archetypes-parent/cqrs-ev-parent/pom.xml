@@ -49,6 +49,16 @@
                 <artifactId>opentelemetry-samplers</artifactId>
                 <version>1.40.0-alpha</version>
             </dependency>
+               <!-- prometheus  con ottel   -->    
+        <dependency>
+             <groupId>io.micrometer</groupId>
+             <artifactId>micrometer-registry-otlp</artifactId>
+        </dependency>
+                    <!-- prometheus deberia quitarse auqne no son excluyentes   -->     
+        <dependency>
+             <groupId>io.micrometer</groupId>
+             <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>    		
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>

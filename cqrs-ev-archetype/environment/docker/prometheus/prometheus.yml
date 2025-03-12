@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: otel_collector
+    #metrics_path: ''
+    static_configs:
+      - targets: ['otel-collector:8889']
+      - targets: ['host.docker.internal:8889']
+      #- targets: ['otel-collector:8888']
+      # - targets: ['host.docker.internal:8080']
+      # - targets: ['otel-collector:8889','host.docker.internal:8080']
+  - job_name: app_query
+    metrics_path: '/archetype-cqrs-ev-query/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8082']
+  - job_name: app_command
+    metrics_path: '/archetype-cqrs-ev-cmd/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8081']
+               # - targets: ['otel-collector:8889','host.docker.internal:8080']        

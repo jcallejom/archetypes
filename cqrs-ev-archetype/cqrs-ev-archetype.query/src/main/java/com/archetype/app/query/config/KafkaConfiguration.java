@@ -13,6 +13,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties.AckMode;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -43,7 +44,7 @@ public class KafkaConfiguration {
 		//  return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(Event.class));
 	
 	  }
-	
+	  @WithSpan(value = "cqrs.command:publish")
 	  @Bean
 	  public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
 	    ConcurrentKafkaListenerContainerFactory<String, Object> listenerContainerFactory = new ConcurrentKafkaListenerContainerFactory<>();
@@ -51,6 +52,7 @@ public class KafkaConfiguration {
 	    listenerContainerFactory.setBatchListener(true);//añade batch al consumer
 	    listenerContainerFactory.setConcurrency(5);//añade hilos
 	    listenerContainerFactory.getContainerProperties().setAckMode(AckMode.MANUAL_IMMEDIATE);//conf respuesta manual
+	    listenerContainerFactory.getContainerProperties().setObservationEnabled(true);//otel
 	//    factory.setCommonErrorHandler(new KafkaCommonErrorHandler());
 	    /*NOTE ErrorHandler @deprecated in favor of {@link #setCommonErrorHandler(CommonErrorHandler) */
 	//    factory.setErrorHandler(new KafkaErrorHandler());

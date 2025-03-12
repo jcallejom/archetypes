@@ -57,4 +57,25 @@ spring:
     template:
       default-topic: "prototype_availability" 
       observation-enabled: true
-   
+#otel properties
+otel:
+  service:
+    name: ${spring.application.name}
+  exporter:
+    otlp:
+      #protocol: grpc
+      #endpoint: http://localhost:4317
+      endpoint: http://localhost:4318
+  metrics:
+    exporter:
+      - "prometheus"
+      - "looging"
+      
+  instrumentation:
+    jdbc.enabled: true
+    kafka.experimental-span-attributes: true
+    common.db-statement-sanitizer.enabled: true ##Enables the DB statement sanitization.ALL TYPES DBS
+    #jdbc.statement-sanitizer.enabled: true ##Enables the only  jdbc statement sanitization.
+    micrometer.enabled: true
+    spring-webflux.enabled: true
+        

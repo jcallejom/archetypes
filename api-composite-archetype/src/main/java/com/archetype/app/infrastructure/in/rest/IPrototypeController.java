@@ -55,7 +55,14 @@ public interface IPrototypeController {
 	,content = @Content(schema = @Schema( implementation = StandarizedApiExceptionResponse.class)))
 	@ApiResponse(responseCode = "403", description = "Forbidden,security error"
 	,content = @Content(schema = @Schema( implementation = StandarizedApiExceptionResponse.class)))
-	public ResponseEntity<PrototypeResponse> findById(Long id);
+	public ResponseEntity<PrototypeResponse> findById(
+		      @Schema(
+		              name = "id",
+		              requiredMode = Schema.RequiredMode.REQUIRED,
+		              example = "adad",
+		              defaultValue = "uadad",
+		              description = "id")
+			@NotNull String id);
 
 	@Operation(description = "Create a new row in prototype table at the DB",summary ="Return 400 if Could not generate prototype")
 	@ApiResponse(responseCode = "200")
@@ -81,7 +88,15 @@ public interface IPrototypeController {
 	,content = @Content(schema = @Schema( implementation = StandarizedApiExceptionResponse.class)))
 	@ApiResponse(responseCode = "403", description = "Forbidden,security error"
 	,content = @Content(schema = @Schema( implementation = StandarizedApiExceptionResponse.class)))
-	public ResponseEntity<PrototypeResponse> put(@NotNull Long id, @Valid PrototypeRequest data) throws FunctionalException;
+	public ResponseEntity<PrototypeResponse> put(
+		      @Schema(
+		              name = "id",
+		              requiredMode = Schema.RequiredMode.REQUIRED,
+		              example = "adad",
+		              defaultValue = "uadad",
+		              description = "id")
+			@NotNull String id,
+			@Valid PrototypeRequest data) throws FunctionalException;
 	
 	@Operation(summary = "Get all rows paged from prototype table at the DB")
 	@ApiResponse(responseCode = "200")

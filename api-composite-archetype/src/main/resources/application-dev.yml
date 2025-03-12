@@ -1,15 +1,15 @@
 #log properties
 logging:
+  pattern.console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"
   level:
+    #root: INFO
     org:
       springframework: ${LOG:DEBUG}
-      #security: ${SEC_LOG:INFO}
+      hibernate: ${HIB_LOG:INFO}
+      security: ${SEC_LOG:DEBUG}
     es:
       once:
         newsop: ${ASP_LOG:DEBUG}
-logging.level.org.springframework.security: ${SEC_LOG:DEBUG}
-logger:
-   org.hibernate.SQL: ${HIB_LOG:INFO}
 #Apic doc properties
 springdoc:
   show-actuator: true

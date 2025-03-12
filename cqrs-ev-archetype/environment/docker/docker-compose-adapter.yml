@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+##########################################################################     
+#keycloack-adapter-service
+##########################################################################  
+  keycloack-adapter-service:
+        container_name: keycloack-adapter-service
+        image: keycloackadapter-keycloack-adapter-service:latest
+        environment:
+          - JAVA_OPTS=
+             -Xms256M 
+             -Xmx256M
+          - KEYCLOACK_SERVER=http://keycloak_web:8080/realms/
+          - KEYCLOACK_REALM=prototype-services
+          - KEYCLOACK_REAL_ID=bt2zarcZQl1d0nk64XSlTg9N40sNczIYY3ky3YaIgtU
+          - KEYCLOACK_SECRET=FNXOP08GziiCMysAE0ST6D05Slw1zIbw
+          - KEYCLOACK_CLIENT=bff-service
+          #-Dspring.profiles.active=docker
+
+        ports:
+         - 8092:8092    
+        networks:
+         - cqrs-net
+networks:
+    cqrs-net:
+        name: cqrs-net
+        driver: bridge

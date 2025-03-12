@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,12 +37,12 @@ public class PrototypeController implements IPrototypeController {
 
 	@Autowired
 	private PrototypeMapperVo mapperVo;
-
+//	@PreAuthorize("hasAuthority('ROLE_BASIC_USER')")
 	@GetMapping("/test")
 	public ResponseEntity<String> test(){
 		return ResponseEntity.ok("The application is working");
 	}
-
+	@PreAuthorize("hasAuthority('ROLE_BASIC_USER')")
 	@GetMapping()
 	public ResponseEntity<List<PrototypeResponse>> getAll(){
 		return ResponseEntity.ok(
@@ -52,12 +53,12 @@ public class PrototypeController implements IPrototypeController {
 					.collect(Collectors.toList())
 					);
 	}
-
+	@PreAuthorize("hasAuthority('ROLE_BASIC_USER')")
 	@GetMapping("/{id}")
-	public ResponseEntity<PrototypeResponse> findById(@PathVariable Long id){
+	public ResponseEntity<PrototypeResponse> findById(@PathVariable(value="id") String id){
 		return ResponseEntity.ok(mapperVo.toResponse(service.get(id)));
 	}
-
+	@PreAuthorize("hasAuthority('ROLE_BASIC_USER')")
 	@PostMapping()
 	public ResponseEntity<PrototypeResponse> post(@RequestBody PrototypeRequest data){
 
@@ -67,9 +68,9 @@ public class PrototypeController implements IPrototypeController {
 						)
 				);
 	}
-
+	@PreAuthorize("hasAuthority('ROLE_BASIC_USER')")
 	@PutMapping("/{id}")
-	public ResponseEntity<PrototypeResponse> put(@PathVariable Long id, @RequestBody PrototypeRequest data)
+	public ResponseEntity<PrototypeResponse> put(@PathVariable(value="id") String id, @RequestBody PrototypeRequest data)
 			throws FunctionalException {
 		return ResponseEntity.ok(
 				mapperVo.toResponse(
@@ -77,7 +78,7 @@ public class PrototypeController implements IPrototypeController {
 						)
 				);
 	}
-
+	@PreAuthorize("hasAuthority('ROLE_BASIC_USER')")
 	@GetMapping("/findall")
 	public ResponseEntity<List<PrototypeResponse>> findAllPage(Pageable pageable) {
 		Page<Prototype> page = service.findAllPage(PaginationUtil.parsePageableSort(Prototype.class, pageable));

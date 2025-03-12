@@ -6,7 +6,7 @@ server:
     context-path: /${spring.application.name}
 spring:
    application:
-    name: nsp-archetype-cqrs-ev-query
+    name: archetype-cqrs-ev-query
    profiles:
      active: dev
    config:
@@ -25,14 +25,14 @@ management:
   metrics:
    tags:
     application: ${spring.application.name}
-  otlp:
-    tracing:
+  #otlp:
+    #tracing:
         #endpoint: http://localhost:4317
         #endpoint: http://localhost:4318/v1/traces
-        endpoint: http://localhost:4318
-    metrics:
-      export:
+     #   endpoint: http://localhost:4318
+    #metrics:
+      #export:
           #url: http://localhost:4317 
           #url: http://localhost:4318/v1/metrics
-          url: http://localhost:4318
-          step: 10s
+          #url: http://localhost:4318
+          #step: 10s

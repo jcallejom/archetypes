@@ -26,7 +26,7 @@ import lombok.Setter;
 //@JsonIgnoreProperties("version")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_EMPTY)
-public class BaseResponseVo<T extends Serializable> implements Serializable {
+public abstract class BaseResponseVo<T extends Serializable> implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final transient long serialVersionUID = 2463764888580633674L;

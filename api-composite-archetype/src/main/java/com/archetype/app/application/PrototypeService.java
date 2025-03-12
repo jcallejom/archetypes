@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import com.archetype.app.domain.Prototype;
@@ -22,7 +23,7 @@ public class PrototypeService implements IPrototypeService {
 	@Autowired
 	IPrototypeRepository repository;
 	
-	public Prototype get(Long id) {
+	public Prototype get(String id) {
 		try {
 			return repository.findById(id);
 		} catch (Exception e) {
@@ -56,18 +57,24 @@ public class PrototypeService implements IPrototypeService {
 	}
 
 	@Override
-	public Prototype update(Long id, Prototype data) throws FunctionalException {
+	public Prototype update(String id, Prototype data)  {
+		Prototype prototype=Prototype.builder().build();
 		try {
-			return repository.update(id,data);
-		} catch (FunctionalException e) {
-			log.error(e.getMessage());
-			throw e;
-			
+			prototype=repository.update(id,data);
+      	
+		}catch (ObjectOptimisticLockingFailureException e) {
+            log.warn("Savings has been updated before in concurrent transaction");
+            prototype=repository.update(id,data);
+//       	} catch (FunctionalException e) {
+//			log.error(e.getMessage());
+//			throw new TechnicalRuntimeException(e.getErrorCode(),e.getMessage(),e.getHttpCode());
+//		    
 		} catch (Exception e) {
 			log.error("Can't update the data into the repository");
 			log.error(e.getMessage());
-			throw new TechnicalRuntimeException(GenericError.EXCEPTION_COM_DATABASE_ERROR);
+			throw new TechnicalRuntimeException(GenericError.EXCEPTION_COM_DATABASE_ERROR,e);
 		}
+		return prototype;
 	}
 
 	@Override
