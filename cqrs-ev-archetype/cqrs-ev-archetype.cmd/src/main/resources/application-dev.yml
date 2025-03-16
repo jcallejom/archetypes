@@ -48,8 +48,11 @@ otel:
       #protocol: grpc
       #endpoint: http://localhost:4317
       endpoint: http://localhost:4318
+      metrics:
+        endpoint: http://localhost:4318
   metrics:
     exporter:
+      - "otlp"
       - "prometheus"
       - "looging"
       

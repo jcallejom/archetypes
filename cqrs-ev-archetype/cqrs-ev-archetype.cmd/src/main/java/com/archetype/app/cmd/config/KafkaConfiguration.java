@@ -67,7 +67,7 @@ public class KafkaConfiguration {
 		 props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,JsonSerializer.class);
 		 return props;
 		 }
-	 @WithSpan(value = "cqrs.command:publish")
+//	 @WithSpan(value = "cqrs.command:publish")
 	 @Bean//(name = "kafkaTemplatenuevo" )
 	 public KafkaTemplate<String, Object> kafkaTemplate() {
 		 Map<String, Object>senderProps= producerProps();
@@ -77,13 +77,13 @@ public class KafkaConfiguration {
 		 KafkaTemplate<String, Object> template=new KafkaTemplate<>(producerFactory);
 		 /*añadir otel*/
 		 template.setObservationEnabled(true);
-		 template.setObservationConvention(new KafkaTemplateObservationConvention() {
-	         @Override
-	         public KeyValues getLowCardinalityKeyValues(KafkaRecordSenderContext context) {
-	            return KeyValues.of("topic", context.getDestination(),
-	                    "id", String.valueOf(context.getRecord().key()));
-	         }
-	      });
+//		 template.setObservationConvention(new KafkaTemplateObservationConvention() {
+//	         @Override
+//	         public KeyValues getLowCardinalityKeyValues(KafkaRecordSenderContext context) {
+//	            return KeyValues.of("topic", context.getDestination(),
+//	                    "id", String.valueOf(context.getRecord().key()));
+//	         }
+//	      });
 		 return template;
 	 }
 

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import com.archetype.cqrsev.core.events.BaseEvent;
 import com.archetype.cqrsev.core.produces.EventProducer;
 
+import io.opentelemetry.instrumentation.annotations.SpanAttribute;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.extern.slf4j.Slf4j;
 
 // TODO: Auto-generated Javadoc
@@ -61,7 +63,8 @@ public class PrototypeEventProduccer implements EventProducer {
 	 * @param event the event
 	 */
 	@Override
-	public void produceASyn(String topic, String key, BaseEvent event) {
+	@WithSpan(value = "cqrs.command:publish:produceASyn")
+	public void produceASyn(String topic, String key,@SpanAttribute("event") BaseEvent event) {
 		
 		CompletableFuture <SendResult<String, Object>>future = kafkaTemplate.send(topic,key,event);
 		   future.thenAccept(result -> {

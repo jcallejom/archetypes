@@ -13,6 +13,7 @@ import com.archetype.app.common.events.PrototypeDayChangedEvent;
 import com.archetype.app.common.events.PrototypeOpenedEvent;
 import com.archetype.app.query.infrastructure.handlers.EventHandler;
 
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.extern.slf4j.Slf4j;
 
 // TODO: Auto-generated Javadoc
@@ -27,19 +28,43 @@ public class PrototypeEventsConsumers implements EventsConsumers {
 	@Autowired
 	private EventHandler eventHandler;
 	
-	private static long numRep=0;
-	private static long start=0;
-	private static long finish=0;
+//	private static long numRep=0;
+//	private static long start=0;
+//	private static long finish=0;
 	
-//	@KafkaListener(topics="PrototypeOpenedEvent",groupId = "${spring.kafka.consumer.group-id}")
-//	@Override
-//	public void consume( ConsumerRecord<String,PrototypeOpenedEvent> messageEvent, Acknowledgment ack) {
-//		numRep++;
-//		if(numRep==1) {
-//			start=System.currentTimeMillis();
-//		}
-//		finish=System.currentTimeMillis();
+	@WithSpan(value = "cqrs.command:publish:produceASyn")	
+	@KafkaListener(topics="PrototypeOpenedEvent",groupId = "${spring.kafka.consumer.group-id}")
+	@Override
+	public void consume( ConsumerRecord<String,PrototypeOpenedEvent> messageEvent, Acknowledgment ack) {
+		var start=System.currentTimeMillis();
+		log.info("start  time: {} ms", start);
 //		if(Integer.parseInt(messageEvent.value().getPrototypeCode())%500==0)
+		log.info("Recived Message :  topic {}, offset {}, partition {}, key: {}, value: {}",
+					messageEvent.topic(),
+					messageEvent.offset(),
+					messageEvent.partition(),
+					messageEvent.key(),
+					messageEvent.value()
+					);
+		
+		eventHandler.on(messageEvent.value());
+		ack.acknowledge();//una vez consuma el mensaje tengo que indicaler PrototypeEntity PrototypeEntity kafka que ya fue consumido
+		log.info("finish  time: {} ms", System.currentTimeMillis()-start);	
+		//		if(numRep%500==0)
+//			log.info("num repeticiones {} ,finish time: {} ms", numRep, finish-start);
+	}
+
+	
+//	@KafkaListener(topics="PrototypeOpenedEvent",
+//					groupId = "${spring.kafka.consumer.group-id}",
+//			  containerFactory  ="kafkaListenerContainerFactory",
+//			  properties = {"max.poll.interval.ms:10000",//4 sec
+//		  		"max.poll.records:5"})//10 rgis 
+//	@Override
+//	public void consume(List<ConsumerRecord<String,PrototypeOpenedEvent>> events, Acknowledgment ack) {
+//		var start=System.currentTimeMillis();
+//		log.info("start batch time: {} ms", start);
+//		for (ConsumerRecord<String,PrototypeOpenedEvent> messageEvent : events) {
 //			log.info("Recived Message :  topic {}, offset {}, partition {}, key: {}, value: {}",
 //					messageEvent.topic(),
 //					messageEvent.offset(),
@@ -47,11 +72,11 @@ public class PrototypeEventsConsumers implements EventsConsumers {
 //					messageEvent.key(),
 //					messageEvent.value()
 //					);
-//		
-//		eventHandler.on(messageEvent.value());
+//			eventHandler.on(messageEvent.value());
+//		}
 //		ack.acknowledge();//una vez consuma el mensaje tengo que indicaler PrototypeEntity PrototypeEntity kafka que ya fue consumido
-//		if(numRep%500==0)
-//			log.info("num repeticiones {} ,finish time: {} ms", numRep, finish-start);
+////		if(numRep%50==0)
+//			log.info(",finish batch time: {} ms", finish-start);	
 //	}
 	//@KafkaListener(topics="${spring.kafka.template.default-topic}",groupId = "${spring.kafka.consumer.group-id}")
 //	@KafkaListener(topics="PrototypeOpenedEvent",groupId = "${spring.kafka.consumer.group-id}")
@@ -60,33 +85,6 @@ public class PrototypeEventsConsumers implements EventsConsumers {
 //		eventHandler.on(event);
 //		ack.acknowledge();//una vez consuma el mensaje tengo que indicaler PrototypeEntity PrototypeEntity kafka que ya fue consumido
 //	}
-	@KafkaListener(topics="PrototypeOpenedEvent",
-					groupId = "${spring.kafka.consumer.group-id}",
-			  containerFactory  ="kafkaListenerContainerFactory",
-			  properties = {"max.poll.interval.ms:10000",//4 sec
-		  		"max.poll.records:5"})//10 rgis 
-	@Override
-	public void consume(List<ConsumerRecord<String,PrototypeOpenedEvent>> events, Acknowledgment ack) {
-		numRep++;
-		if(numRep==1) {
-			start=System.currentTimeMillis();
-		}
-		finish=System.currentTimeMillis();
-		log.info("num repeticiones {} ,start batch time: {} ms", numRep, start);
-		for (ConsumerRecord<String,PrototypeOpenedEvent> messageEvent : events) {
-			log.info("Recived Message :  topic {}, offset {}, partition {}, key: {}, value: {}",
-					messageEvent.topic(),
-					messageEvent.offset(),
-					messageEvent.partition(),
-					messageEvent.key(),
-					messageEvent.value()
-					);
-			eventHandler.on(messageEvent.value());
-		}
-		ack.acknowledge();//una vez consuma el mensaje tengo que indicaler PrototypeEntity PrototypeEntity kafka que ya fue consumido
-//		if(numRep%50==0)
-			log.info("num repeticiones {} ,finish batch time: {} ms", numRep, finish-start);	
-	}
 	/**
 	 * Consume.
 	 *
@@ -101,15 +99,13 @@ public class PrototypeEventsConsumers implements EventsConsumers {
 	@KafkaListener(topics="PrototypeDayChangedEvent",groupId = "${spring.kafka.consumer.group-id}")
 	@Override
 	public void consume(PrototypeDayChangedEvent event, Acknowledgment ack) {
-		numRep++;
-		if(numRep==1) {
-			start=System.currentTimeMillis();
-		}
-		finish=System.currentTimeMillis();
+		var start=System.currentTimeMillis();
+		log.info("start  time: {} ms", start);
 		eventHandler.on(event);
 		ack.acknowledge();
-		if(numRep%100==0)
-			log.info("num repeticiones {} ,finish time: {} ms", numRep, finish-start);
+		log.info(",finish  time: {} ms", System.currentTimeMillis()-start);	
+//		if(numRep%100==0)
+//			log.info("num repeticiones {} ,finish time: {} ms", numRep, finish-start);
 
 	}
 	

@@ -13,6 +13,9 @@ spring:
      import: "classpath:/application-dev.yml"
 
 management:
+  tracing:
+    sampling:
+      probability: 1.0  
   endpoints:
     web:
       #base-path: /ocp-nsp-sorteo
@@ -28,11 +31,11 @@ management:
   otlp:
       tracing:
           #endpoint: http://localhost:4317
-          #endpoint: http://localhost:4318/v1/traces
-          endpoint: http://localhost:4326
-      #metrics:
-        #export:
+          endpoint: http://localhost:4318/v1/traces
+          #endpoint: http://localhost:4318
+      metrics:
+        export:
             #url: http://localhost:4317 
-            #url: http://localhost:4318/v1/metrics
+            url: http://localhost:4318/v1/metrics
             #url: http://localhost:4318
             #step: 10s

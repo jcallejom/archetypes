@@ -44,12 +44,12 @@ public class KafkaConfiguration {
 		//  return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(Event.class));
 	
 	  }
-	  @WithSpan(value = "cqrs.command:publish")
+//	  @WithSpan(value = "cqrs.command:publish")
 	  @Bean
 	  public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
 	    ConcurrentKafkaListenerContainerFactory<String, Object> listenerContainerFactory = new ConcurrentKafkaListenerContainerFactory<>();
 	    listenerContainerFactory.setConsumerFactory(consumerFactory());
-	    listenerContainerFactory.setBatchListener(true);//añade batch al consumer
+	    //listenerContainerFactory.setBatchListener(true);//añade batch al consumer
 	    listenerContainerFactory.setConcurrency(5);//añade hilos
 	    listenerContainerFactory.getContainerProperties().setAckMode(AckMode.MANUAL_IMMEDIATE);//conf respuesta manual
 	    listenerContainerFactory.getContainerProperties().setObservationEnabled(true);//otel

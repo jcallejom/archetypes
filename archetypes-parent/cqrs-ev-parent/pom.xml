@@ -39,7 +39,13 @@
   </dependencyManagement>
   
 <dependencies>
-   <!-- Java agente opentelemetry springboot--> 
+   <!-- Java agente opentelemetry --> 
+           <dependency>
+            <groupId>io.opentelemetry.javaagent</groupId>
+            <artifactId>opentelemetry-javaagent</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+   <!-- opentelemetry springboot-->       
         <dependency>
           <groupId>io.opentelemetry.instrumentation</groupId>
           <artifactId>opentelemetry-spring-boot-starter</artifactId>
@@ -49,11 +55,23 @@
                 <artifactId>opentelemetry-samplers</artifactId>
                 <version>1.40.0-alpha</version>
             </dependency>
+     <!-- Dependencias de jaeger cloud OpenTelemetry With OTLP spring 3.0.x-->
+     <!-- bridges the Micrometer Observation API to OpenTelemetry.-->
+       <dependency>
+         <groupId>io.micrometer</groupId>
+         <artifactId>micrometer-tracing-bridge-otel</artifactId>
+      </dependency> 
+      <!-- reports traces to a collector that can accept OTLP.-->
+      <dependency>
+         <groupId>io.opentelemetry</groupId>
+         <artifactId>opentelemetry-exporter-otlp</artifactId>
+      </dependency>            
                <!-- prometheus  con ottel   -->    
         <dependency>
              <groupId>io.micrometer</groupId>
              <artifactId>micrometer-registry-otlp</artifactId>
         </dependency>
+        
                     <!-- prometheus deberia quitarse auqne no son excluyentes   -->     
         <dependency>
              <groupId>io.micrometer</groupId>

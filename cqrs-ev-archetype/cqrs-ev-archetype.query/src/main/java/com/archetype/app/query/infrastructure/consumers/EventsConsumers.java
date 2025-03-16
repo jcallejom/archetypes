@@ -24,8 +24,8 @@ public interface EventsConsumers {
 	 */
 	//de eso se encarga Acknowledgment
 //	void consume(@Payload PrototypeOpenedEvent event,Acknowledgment ack);
-	void consume( List<ConsumerRecord<String,PrototypeOpenedEvent>> events, Acknowledgment ack);
-//	void consume (@Payload ConsumerRecord<String,PrototypeOpenedEvent> messageEvent ,Acknowledgment ack);
+//	void consume( List<ConsumerRecord<String,PrototypeOpenedEvent>> events, Acknowledgment ack);
+	void consume (@Payload ConsumerRecord<String,PrototypeOpenedEvent> messageEvent ,Acknowledgment ack);
 	/**
 	 * Consume.
 	 *

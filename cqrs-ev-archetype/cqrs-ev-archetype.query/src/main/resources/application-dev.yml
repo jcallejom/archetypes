@@ -66,6 +66,8 @@ otel:
       #protocol: grpc
       #endpoint: http://localhost:4317
       endpoint: http://localhost:4318
+      metrics:
+        endpoint: http://localhost:4318  
   metrics:
     exporter:
       - "prometheus"
@@ -73,7 +75,7 @@ otel:
       
   instrumentation:
     jdbc.enabled: true
-    kafka.experimental-span-attributes: true
+    kafka.experimental-span-attributes: false
     common.db-statement-sanitizer.enabled: true ##Enables the DB statement sanitization.ALL TYPES DBS
     #jdbc.statement-sanitizer.enabled: true ##Enables the only  jdbc statement sanitization.
     micrometer.enabled: true
