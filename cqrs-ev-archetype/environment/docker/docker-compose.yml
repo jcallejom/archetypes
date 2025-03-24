@@ -110,22 +110,22 @@ services:
 ##########################################################################     
 #jaeger service
 ##########################################################################
-  jaeger:
-    container_name: jaeger
-    image: "jaegertracing/all-in-one:latest" ##1.125
-    restart: always
-    ports:
-        - "16686:16686"
-        - "14268:14268"
-        - "14250:14250"
-        - "4318:4318" 
-        #- "4317:4317" 
-        #- "4318" 
-        #- "4317" 
-    environment:
-        - COLLECTOR_OTLP_ENABLED=true
-    networks:
-        - cqrs-net                     
+#jaeger:
+#  container_name: jaeger
+#  image: "jaegertracing/all-in-one:latest" ##1.125
+#  restart: always
+#  ports:
+#      - "16686:16686"
+#      - "14268:14268"
+#      - "14250:14250"
+#      - "4318:4318" 
+#      #- "4317:4317" 
+#      #- "4318" 
+#      #- "4317" 
+#  environment:
+#      - COLLECTOR_OTLP_ENABLED=true
+#  networks:
+#      - cqrs-net    
 volumes:
     zookeeper_data:
       driver: local

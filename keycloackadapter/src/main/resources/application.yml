@@ -1,0 +1,54 @@
+server:
+  port: 8092
+  servlet:
+    context-path: /${spring.application.name}
+  #forward-headers-strategy: framework
+spring:
+  application:
+    name: keycloackadapter
+management:
+  endpoints:
+    web:
+      exposure:
+        #include: '*'
+        include: health, metrics, prometheus, refresh
+  endpoint:
+    health:
+      show-details: ALWAYS
+  metrics:
+   tags:
+    application: ${spring.application.name}
+springdoc:
+  show-actuator: true
+  swagger-ui:
+    path: /swagger-ui # swagger custom path
+    enabled: true  # Disabling the swagger-ui production enviroments always false
+    use-root-path: true
+    groups-order: DESC
+  #packagesToScan: es.once.newsop.nspkeycloackadapter, es.once.newsop.nspkeycloackadapter.infrastructure.in.rest
+  #pathsToMatch: /v1, /**
+  #pathsToMatch: /v1/security/**, /**
+logging:
+  level:
+    root: INFO
+    org:
+      springframework: DEBUG
+    es:
+      once:
+        newsop: DEBUG
+#############################
+keycloak:
+  base-uri: ${KEYCLOACK_SERVER:http://localhost:8088/realms/}
+  realm : ${KEYCLOACK_REALM:prototype-services}
+  authorization-uri: ${keycloak.base-uri}${keycloak.realm}/protocol/openid-connect/auth
+  user-info-uri: ${keycloak.base-uri}${keycloak.realm}/protocol/openid-connect/userinfo
+  token-uri: ${keycloak.base-uri}${keycloak.realm}/protocol/openid-connect/token
+  logout: ${keycloak.base-uri}${keycloak.realm}/protocol/openid-connect/logout
+  jwk-set-uri: ${keycloak.base-uri}${keycloak.realm}/protocol/openid-connect/certs
+  certs-id: ${KEYCLOACK_REAL_ID:T8XN4l6IGHW5Yd_VD9WdV7JW_F5UVVGiZ1csJewsyLs}
+ 
+  client-id: ${KEYCLOACK_CLIENT:bff-service}
+  client-secret: ${KEYCLOACK_SECRET:UoowXrW5KgpRlPbOJuL5n8ZaLcjOo2nT}
+  scope: profile #openid
+  authorization-grant-type: password
+  authorization-grant-type-refresh: refresh_token
