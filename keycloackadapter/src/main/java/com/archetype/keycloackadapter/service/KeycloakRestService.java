@@ -4,19 +4,23 @@
  * and open the template in the editor.
  */
 package com.archetype.keycloackadapter.service;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.archetype.keycloackadapter.vo.AdminTokenResponse;
+import com.archetype.keycloackadapter.vo.CreateUserCommand;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  *
@@ -27,6 +31,11 @@ public class KeycloakRestService {
 
     @Autowired
     private RestTemplate restTemplate;
+    
+    @Value("${keycloak.user-uri}")
+    private String userUri;
+    @Value("${keycloak.admin-token-uri}")
+    private String adminTokenUri;
 
     @Value("${keycloak.token-uri}")
     private String keycloakTokenUri;
@@ -126,6 +135,43 @@ public class KeycloakRestService {
         map.add("refresh_token",refreshToken);
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, null);
        return restTemplate.postForObject(keycloakTokenUri, request, String.class);
+    }
+    
+    
+    public String createUser(CreateUserCommand command) throws Exception {
+    	   MultiValueMap<String, String> mapadmin = new LinkedMultiValueMap<>();
+           mapadmin.add("username","admin");
+           mapadmin.add("password","admin");
+           mapadmin.add("client_id","admin-cli");
+           mapadmin.add("grant_type",grantType);
+    
+    	HttpEntity<MultiValueMap<String, String>> requestadmin = new HttpEntity<>(mapadmin, new HttpHeaders());
+    	AdminTokenResponse adminTokenResponse =restTemplate.postForObject(adminTokenUri, requestadmin, AdminTokenResponse.class);
+    	
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();     
+        headers.add("Authorization","Bearer "+ adminTokenResponse.getAccess_token());
+        headers.add("Content-Type",MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Accept","*/*");
+
+        
+
+    	MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+        map.add("username",command.getUsername());       
+        map.add("firstName",command.getFirstName());
+        map.add("lastName",command.getLastName());
+        map.add("enabled","true");
+//        MultiValueMap<String, String> credentials = new LinkedMultiValueMap<>();        
+//        credentials.add("type",grantType);
+//        credentials.add("value",command.getPassword());
+//        credentials.add("temporary","false");
+//        map.add("credentials",credentials);
+
+        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
+       return restTemplate.postForObject(userUri, request, String.class);
+
+    
+//       {"username":"internal_a","firstName":"INTERNAL_A","lastName":"INTERNAL_A","enabled":"true","credentials":[{"type":"password","value":"123","temporary":false}]}
+
     }
 
 }

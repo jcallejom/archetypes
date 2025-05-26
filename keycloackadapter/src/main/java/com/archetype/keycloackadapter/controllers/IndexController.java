@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.archetype.keycloackadapter.exception.BussinesRuleException;
 import com.archetype.keycloackadapter.service.JwtService;
 import com.archetype.keycloackadapter.service.KeycloakRestService;
+import com.archetype.keycloackadapter.vo.CreateUserCommand;
 import com.auth0.jwk.Jwk;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -136,5 +138,16 @@ public class IndexController {
             logger.error("unable to refresh, exception : {} ", e.getMessage());
             throw new BussinesRuleException("refresh", "False",HttpStatus.FORBIDDEN);   
         }
-    }  
+    } 
+    
+    @PostMapping(value = "/createuser", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createUser(@RequestBody CreateUserCommand reateUserCommand) throws BussinesRuleException {
+        try {            
+            return ResponseEntity.ok(restService.createUser(reateUserCommand));
+        } catch (Exception e) {
+            logger.error("unable to create user, exception : {} ", e.getMessage());
+            throw new BussinesRuleException("createUser", "False",HttpStatus.FORBIDDEN);   
+        }
+    } 
+    
 }
