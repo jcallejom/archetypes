@@ -45,12 +45,16 @@ keycloak:
   token-uri: ${keycloak.base-uri}${keycloak.realm}/protocol/openid-connect/token
   logout: ${keycloak.base-uri}${keycloak.realm}/protocol/openid-connect/logout
   jwk-set-uri: ${keycloak.base-uri}${keycloak.realm}/protocol/openid-connect/certs
-  certs-id: ${KEYCLOACK_REAL_ID:lV9ujzwh3tvdNT8btLep9Ha1WHfQGlrnMXWlSVUh2Jc}
-  user-uri: http://localhost:8088/admin/realms/${keycloak.realm}/users
+  admin-uri: ${KEYCLOACK_ADMIN:http://localhost:8088/admin/realms/}
+  user-uri: ${keycloak.admin-uri}${keycloak.realm}/users/
   admin-token-uri: ${keycloak.base-uri}master/protocol/openid-connect/token
+  client-uri: ${keycloak.admin-uri}${keycloak.realm}/clients/
+ 
   
+  certs-id: ${KEYCLOACK_REAL_ID:Z1_ZC2ljfFnardfGQ5UJKKcif5w30RPGLrbFaEaAt80}
+  client-secret: ${KEYCLOACK_SECRET:u4WcX8Put1lZuv4TNTbLluoPpWAaPG9h}
   client-id: ${KEYCLOACK_CLIENT:bff-service}
-  client-secret: ${KEYCLOACK_SECRET:02mMgDkbK2YdMBlNIG7GyDp8bmc8tHYb}
+  
   scope: profile #openid
   authorization-grant-type: password
   authorization-grant-type-refresh: refresh_token

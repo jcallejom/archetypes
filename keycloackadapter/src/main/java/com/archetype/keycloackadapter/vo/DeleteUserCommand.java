@@ -9,11 +9,10 @@ import java.util.UUID;
 @Data
 @Builder
 @Jacksonized
-public final class CreateUserCommand {
+public final class DeleteUserCommand {
     private final String username;
-    private final String firstName;
-    private final String lastName;
-    private final String password;
-    private final String clientId;//nombre del cliente
+//    private final String firstName;
+//    private final String lastName;
+//    private final String password;
     
 }

@@ -42,8 +42,8 @@ public class ApiSecurityExceptionHandler {
     
      @ExceptionHandler(BussinesRuleException.class)
     public ResponseEntity<StandarizedApiExceptionResponse> handleBussinesRuleException(BussinesRuleException ex) {
-        StandarizedApiExceptionResponse response = new StandarizedApiExceptionResponse("Error de validacion",ex.getCode(),ex.getMessage());
-        return new ResponseEntity(response, HttpStatus.PARTIAL_CONTENT);
+        StandarizedApiExceptionResponse response = new StandarizedApiExceptionResponse("Error en operacion",ex.getCode(),ex.getMessage());
+        return new ResponseEntity(response, ex.getHttpStatus());
     }
 //	  @ExceptionHandler(Exception.class)
 //	    public ResponseEntity<StandarizedApiExceptionResponse> handleRuleException(Exception ex) {
