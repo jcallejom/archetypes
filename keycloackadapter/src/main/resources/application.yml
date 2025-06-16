@@ -49,7 +49,8 @@ keycloak:
   user-uri: ${keycloak.admin-uri}${keycloak.realm}/users/
   admin-token-uri: ${keycloak.base-uri}master/protocol/openid-connect/token
   client-uri: ${keycloak.admin-uri}${keycloak.realm}/clients/
- 
+  role-uri: ${keycloak.admin-uri}${keycloak.realm}/clients/
+
   
   certs-id: ${KEYCLOACK_REAL_ID:Z1_ZC2ljfFnardfGQ5UJKKcif5w30RPGLrbFaEaAt80}
   client-secret: ${KEYCLOACK_SECRET:u4WcX8Put1lZuv4TNTbLluoPpWAaPG9h}

@@ -14,6 +14,7 @@ public final class CreateUserCommand {
     private final String firstName;
     private final String lastName;
     private final String password;
-    private final String clientId;//nombre del cliente
+    private final String clientId;//nombre del cliente keycloack
+    private final String rolName;
     
 }

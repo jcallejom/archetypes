@@ -4,8 +4,10 @@
  * and open the template in the editor.
  */
 package com.archetype.keycloackadapter.service;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,8 @@ import com.archetype.keycloackadapter.vo.AdminTokenResponse;
 import com.archetype.keycloackadapter.vo.ClientResponse;
 import com.archetype.keycloackadapter.vo.CreateUserCommand;
 import com.archetype.keycloackadapter.vo.DeleteUserCommand;
+import com.archetype.keycloackadapter.vo.RolRequest;
+import com.archetype.keycloackadapter.vo.RolResponse;
 import com.archetype.keycloackadapter.vo.UserInfoRequest;
 import com.archetype.keycloackadapter.vo.UserInfoRequest.Credential;
 import com.archetype.keycloackadapter.vo.UserInfoResponse;
@@ -156,21 +160,32 @@ public class KeycloakRestService {
     
     
     public String createUser(CreateUserCommand command) throws Exception {
+   //admintoken 	
     	MultiValueMap<String, String> mapadmin = new LinkedMultiValueMap<>();
         mapadmin.add("username","admin");
         mapadmin.add("password","admin");
         mapadmin.add("client_id","admin-cli");
         mapadmin.add("grant_type",grantType);
         
+        
     	HttpEntity<MultiValueMap<String, String>> requestadmin = new HttpEntity<>(mapadmin, new HttpHeaders());
-    	AdminTokenResponse adminTokenResponse =restTemplate.postForObject(adminTokenUri, requestadmin, AdminTokenResponse.class);
-    	
+    	AdminTokenResponse adminTokenResponse=null;
+    	try {
+
+    		adminTokenResponse =restTemplate.postForObject(adminTokenUri, requestadmin, AdminTokenResponse.class);
+    	}catch (Exception e) {
+			log.error(e.getMessage());
+			throw e;
+		}
+        
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();     
         headers.add("Authorization","Bearer "+ adminTokenResponse.getAccess_token());
         headers.add("Content-Type",MediaType.APPLICATION_JSON_VALUE);
         headers.add("Accept","*/*");
         HttpEntity<MultiValueMap<String, Object>> requestId = new HttpEntity<>( headers);
 
+        
+        
         List<Credential> credentials= new ArrayList<>();
         credentials.add(Credential.builder().type(grantType).value(command.getPassword()).temporary(false).build());
         UserInfoRequest u=UserInfoRequest.builder()
@@ -182,10 +197,10 @@ public class KeycloakRestService {
         		.build();
         HttpEntity<UserInfoRequest> request = new HttpEntity<>(u, headers);
         
-        ResponseEntity<?> re= null;
-        //crear cliente
+        ResponseEntity<?> responseCreateClient= null;
+//crear cliente
         try {
-	        re=restTemplate.exchange(userUri,HttpMethod.POST ,request, String.class);
+	        responseCreateClient=restTemplate.exchange(userUri,HttpMethod.POST ,request, String.class);
     	}catch (Exception e) {
 			log.error(e.getMessage());
 			throw e;
@@ -203,8 +218,11 @@ public class KeycloakRestService {
 		   	 	
 		}catch (Exception e) {
 			log.error(e.getMessage());
+//			this.deleteUser(DeleteUserCommand.builder().username(clientUrl).build());
 			throw e;
 		}
+   	 	String clientid=clientInfoResponse.getBody().get(0).getId();
+
 //user-id
 //   	 	Thread.sleep(1000);///hay que jugar con tiempos de admin cli token user
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(userUri).queryParam("username",command.getUsername());  
@@ -218,15 +236,49 @@ public class KeycloakRestService {
 			log.error(e.getMessage());
 			throw e;
 		}
+   	 	String userid=userInfoResponse.getBody().get(0).getId();
+//rol id
+   	 	
+        UriComponentsBuilder roleclientUriBuilder = UriComponentsBuilder.fromHttpUrl(clientUrl)//.queryParam("clientId",command.getClientId())  
+		.pathSegment(clientid,"roles");
+        String roleUrl = roleclientUriBuilder.toUriString();
+        ResponseEntity<List<RolResponse>>rolResponse=null;
+   	 	try {
+   	 		 	rolResponse =restTemplate.exchange(roleUrl,HttpMethod.GET , requestId , new ParameterizedTypeReference<List<RolResponse>>() {});
+		}catch (Exception e) {
+			log.error(e.getMessage());
+			throw e;
+		}
+   	
+   	 	String rolId = rolResponse.getBody().stream()
+                .filter(rol -> rol.getName().equals(command.getRolName())) // Filtra por el nombre del rol
+                .map(RolResponse::getId)
+                .findFirst() // Obtiene el primer ID que coincida (un Optional<String>)
+                .orElseThrow(() -> new RuntimeException("No se encontró ningún rol con el nombre: " + command.getRolName())); 
+   	 	
+   	 	List<RolRequest> rollist = new LinkedList<>();
+   	 	rollist.add( RolRequest.builder().id(rolId).name(command.getRolName()).build());
+   	 	HttpEntity<List<RolRequest>> requestAssingRoles = new HttpEntity<>(rollist,headers);
+   	   
 //asind role   	 	
        //1.necesitamos ROLE_ID=$(curl -s "http://$KEYCLOAK_HOST_PORT/admin/realms/prototype-services/clients/$CLIENT_ID/roles" \
    	 //2. mandamos 1 como querypram y curl -i -X POST "http://$KEYCLOAK_HOST_PORT/admin/realms/prototype-services/users/$SORTEO_B_ID/role-mappings/clients/$CLIENT_ID" 
-//        UriComponentsBuilder roleuriBuilder = UriComponentsBuilder.fromHttpUrl(userUri)
-//        		.pathSegment(userInfoResponse.getBody().get(0).getId(),"/role-mappings/clients/",clientInfoResponse.getBody().get(0).getId())
-//        		.queryParam("username",command.getUsername());  
 
-
-        return re.getStatusCode().toString();
+   	   UriComponentsBuilder asingroleuriBuilder = UriComponentsBuilder.fromHttpUrl(userUri)
+        		.pathSegment(userid,"role-mappings","clients",clientid);
+        String urlAssRoles = asingroleuriBuilder.toUriString();
+//        RolRequest.builder().id(rolId).name(command.getRolName()).build()
+    	try {
+ 		 	rolResponse =restTemplate.exchange(urlAssRoles,HttpMethod.POST , requestAssingRoles , new ParameterizedTypeReference<List<RolResponse>>() {});
+	 	}catch (Exception e) {
+			log.error(e.getMessage());
+//			deleteUser(DeleteUserCommand.builder().username(command.getUsername()).build());
+			throw e;
+		}
+    	
+//        return responseCreateClient.getStatusCode().toString();
+        return rolResponse.getStatusCode().toString();//== 204?;//204 no content ok
+        
 //       return restTemplate.exchange(userUri,HttpMethod.POST ,request, String.class).getBody();
     
 //       {"username":"internal_a","firstName":"INTERNAL_A","lastName":"INTERNAL_A","enabled":"true","credentials":[{"type":"password","value":"123","temporary":false}]}
@@ -268,6 +320,7 @@ public class KeycloakRestService {
 			log.error(e.getMessage());
 			throw e;
 		}
+   	 	
 //   	 	UserInfoResponse userInfoResponse =restTemplate.exchange(url,HttpMethod.GET , requestId , UserInfoResponse.class).getBody();
    	 	if(userInfoResponse.getBody().isEmpty())
    	 		throw new BussinesRuleException(HttpStatus.NOT_FOUND.name(), "no user found" ,HttpStatus.NOT_FOUND);   
@@ -278,7 +331,7 @@ public class KeycloakRestService {
 
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(headers);
         uriBuilder=UriComponentsBuilder.fromHttpUrl(userUri).path(userInfoResponse.getBody().get(0).getId());
-        String a=uriBuilder.buildAndExpand(map).toUriString();
+        String a = uriBuilder.buildAndExpand(map).toUriString();
         
         return restTemplate.exchange(uriBuilder.toUriString(),HttpMethod.DELETE ,request, String.class).getStatusCode().toString();
 
